@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
+import radarIcon from "./assets/icons/radar.svg";
 import "./App.css";
 
 function App() {
@@ -68,7 +69,10 @@ function App() {
   return (
     <div className="app-container">
       <div className="app-header">
-        <h1>🌍 GeoHolidays</h1>
+        <div className="header-wrap">
+          <img src={radarIcon} alt="Radar" />
+          <h1>Holiday Radar</h1>
+        </div>
         <p>View upcoming public holidays by country</p>
 
         <div className="country-select">
