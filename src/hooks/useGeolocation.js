@@ -6,23 +6,36 @@ export const useGeolocation = () => {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setError("Geolocation is not supported");
+      setError("Geolocation is not supported by your browser.");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-      },
-      (err) => {
-        console.warn("Geolocation error:", err.message);
-        setLocation({ lat: 50.4501, lon: 30.5234 });
-        setError("Geolocation is not available, default value is used");
-      }
-    );
+    const requestGeolocation = (attempt = 1) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log("Geolocation SUCCESS:", position.coords);
+          setLocation({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude,
+          });
+          setError(null);
+        },
+        (err) => {
+          console.warn(`Geolocation attempt ${attempt} failed:`, err.message);
+          if (attempt === 1) {
+            requestGeolocation(2);
+          } else {
+            setError("Geolocation failed. Please select a country manually.");
+          }
+        },
+        {
+          timeout: 7000,
+          enableHighAccuracy: true,
+        }
+      );
+    };
+
+    requestGeolocation();
   }, []);
 
   return { location, error };
