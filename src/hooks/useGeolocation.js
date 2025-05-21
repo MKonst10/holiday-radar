@@ -6,7 +6,7 @@ export const useGeolocation = () => {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setError("Геолокация не поддерживается");
+      setError("Geolocation is not supported");
       return;
     }
 
@@ -18,9 +18,9 @@ export const useGeolocation = () => {
         });
       },
       (err) => {
-        console.warn("Ошибка геолокации:", err.message);
+        console.warn("Geolocation error:", err.message);
         setLocation({ lat: 50.4501, lon: 30.5234 });
-        setError("Геолокация недоступна, использовано значение по умолчанию");
+        setError("Geolocation is not available, default value is used");
       }
     );
   }, []);

@@ -1,0 +1,108 @@
+.holiday-grid {
+  display: grid;
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  grid-template-columns: 1fr;
+}
+
+.holiday-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.holiday-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.holiday-card h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  color: #0058a3;
+}
+
+.en-name {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.date {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.type {
+  font-size: 13px;
+  margin: 10px 0 6px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tags {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background-color: #e0ecff;
+  color: #003366;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.toggle-wrapper {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.toggle-button {
+  background-color: #0058a3;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-button:hover {
+  background-color: #003f7f;
+}
+
+.days-left {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #222;
+}
+
+@media (min-width: 600px) {
+  .holiday-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .holiday-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

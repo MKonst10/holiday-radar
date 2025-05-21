@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
+import "./App.css";
 
 function App() {
   const { location, error } = useGeolocation();
@@ -15,11 +16,10 @@ function App() {
       try {
         setLoading(true);
         const res = await fetch(
-          `https://geocode.xyz/${location.lat},${location.lon}?geoit=json`
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${location.lat}&longitude=${location.lon}&localityLanguage=en`
         );
-        const geo = await res.json();
-        const countryCode = geo.prov || "US";
-
+        const geoData = await res.json();
+        const countryCode = geoData.countryCode || "US";
         const holidaysData = await fetchHolidays(countryCode);
         setHolidays(holidaysData);
       } catch (e) {
@@ -32,10 +32,21 @@ function App() {
     load();
   }, [location]);
 
-  if (error) return <p>Ошибка геолокации: {error}</p>;
-  if (loading) return <p>Загрузка праздников...</p>;
+  console.log("Holidays:", holidays);
 
-  return <HolidayList holidays={holidays} />;
+  return (
+    <div className="app-container">
+      <div className="app-header">
+        <h1>🌍 GeoHolidays</h1>
+        <p>Upcoming holidays near you</p>
+      </div>
+
+      {error && <p className="error-message">Geolocation error: {error}</p>}
+      {loading && <p className="loading-message">Loading holidays...</p>}
+
+      {!loading && holidays.length > 0 && <HolidayList holidays={holidays} />}
+    </div>
+  );
 }
 
 export default App;
