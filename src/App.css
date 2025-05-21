@@ -1,11 +1,17 @@
+* {
+  box-sizing: border-box;
+}
 #root {
   max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   text-align: center;
   background: linear-gradient(to bottom right, #e9f4ff, #f7fbff);
 }
 .app-container {
   min-height: 100vh;
+  max-width: 1280px;
+  width: 100%;
   background: linear-gradient(to bottom right, #e9f4ff, #f7fbff);
   padding: 40px 16px;
   font-family: Arial, sans-serif;
@@ -21,7 +27,20 @@
   margin-bottom: 32px;
 }
 
-.app-header h1 {
+.app-header p {
+  font-size: 18px;
+  color: #555;
+  margin-top: 10px;
+}
+
+.header-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.header-wrap h1 {
   font-size: 36px;
   margin: 0;
   display: flex;
@@ -30,10 +49,8 @@
   gap: 10px;
 }
 
-.app-header p {
-  font-size: 18px;
-  color: #555;
-  margin-top: 10px;
+.header-wrap img {
+  width: 50px;
 }
 
 .error-message {
@@ -51,4 +68,17 @@
 .empty-message {
   color: #888;
   text-align: center;
+}
+
+.country-select {
+  margin-top: 16px;
+  font-size: 16px;
+  max-width: 400px;
+}
+
+.country-select select {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  width: 100%;
 }
