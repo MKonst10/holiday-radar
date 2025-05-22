@@ -2,7 +2,6 @@
   box-sizing: border-box;
 }
 #root {
-  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   text-align: center;
@@ -10,7 +9,6 @@
 }
 .app-container {
   min-height: 100vh;
-  max-width: 1280px;
   width: 100%;
   background: linear-gradient(to bottom right, #e9f4ff, #f7fbff);
   padding: 40px 16px;
@@ -71,7 +69,7 @@
 }
 
 .country-select {
-  margin-top: 16px;
+  margin: 16px auto 0 auto;
   font-size: 16px;
   max-width: 400px;
 }
