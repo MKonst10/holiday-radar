@@ -2,20 +2,17 @@ import { useEffect, useState } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
+import RadarLoader from "./components/RadarLoader";
 import radarIcon from "./assets/icons/radar.svg";
 import "./App.css";
 
 function App() {
-  const {
-    location,
-    countryCode: detectedCountryCode,
-    error,
-  } = useGeolocation();
+  const { countryCode: detectedCountryCode, error } = useGeolocation();
 
   const [countryCode, setCountryCode] = useState("");
   const [countries, setCountries] = useState([]);
   const [holidays, setHolidays] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (detectedCountryCode && !countryCode) {
@@ -104,8 +101,8 @@ function App() {
         )}
       </div>
 
-      {loading && <p className="loading-message">Loading holidays...</p>}
-      {!loading && <HolidayList holidays={holidays} />}
+      {loading && <RadarLoader />}
+      {!loading && <HolidayList holidays={holidays} loading={loading} />}
     </div>
   );
 }

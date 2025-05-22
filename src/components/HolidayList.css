@@ -34,14 +34,23 @@
   color: #666;
   margin-bottom: 12px;
 }
-
-.date {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
+.date-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  margin: 10px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.date-row .date {
+  font-weight: 600;
+}
+
+.date-row .days-left {
+  color: #007acc;
+  font-weight: 500;
+  font-size: 13px;
 }
 
 .type {
@@ -68,31 +77,24 @@
   border-radius: 6px;
   font-weight: bold;
 }
-
 .toggle-wrapper {
   text-align: center;
-  margin-bottom: 20px;
+  margin-top: 24px;
 }
 
 .toggle-button {
   background-color: #0058a3;
   color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
   border: none;
+  border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
   transition: background-color 0.2s ease;
 }
 
 .toggle-button:hover {
-  background-color: #003f7f;
-}
-
-.days-left {
-  margin: 8px 0;
-  font-size: 13px;
-  color: #222;
+  background-color: #004077;
 }
 
 @media (min-width: 600px) {

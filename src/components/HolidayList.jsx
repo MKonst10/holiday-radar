@@ -1,8 +1,31 @@
 import { useState } from "react";
 import "./HolidayList.css";
 
-const HolidayList = ({ holidays }) => {
-  const [showAll, setShowAll] = useState(false);
+const HolidayList = ({ holidays, loading }) => {
+  const [visibleCount, setVisibleCount] = useState(5);
+
+  const getTypeEmoji = (type) => {
+    switch (type) {
+      case "Public":
+        return "🏖️";
+      case "Bank":
+        return "🏦";
+      case "School":
+        return "🎓";
+      case "Authorities":
+        return "🏢";
+      case "Optional":
+        return "🕊️";
+      case "Observance":
+        return "🕯️";
+      default:
+        return "📅";
+    }
+  };
+
+  if ((!holidays || holidays.length === 0) && loading) {
+    return null;
+  }
 
   if (!holidays || holidays.length === 0) {
     return <p className="empty-message">No holidays to show.</p>;
@@ -15,7 +38,7 @@ const HolidayList = ({ holidays }) => {
     .filter((h) => new Date(h.date) >= today)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  const visible = showAll ? upcoming : upcoming.slice(0, 5);
+  const visible = upcoming.slice(0, visibleCount);
 
   const getDaysLeft = (dateStr) => {
     const target = new Date(dateStr);
@@ -24,36 +47,48 @@ const HolidayList = ({ holidays }) => {
     return diffDays;
   };
 
+  const handleShowMore = () => {
+    setVisibleCount((prev) => prev + 5);
+  };
+
   return (
     <>
-      <div className="toggle-wrapper">
-        <button className="toggle-button" onClick={() => setShowAll(!showAll)}>
-          {showAll ? "Show only next 5" : "Show all holidays"}
-        </button>
-      </div>
-
       <div className="holiday-grid">
         {visible.map((holiday) => (
-          <div key={holiday.date} className="holiday-card">
+          <div
+            key={`${holiday.date}-${holiday.localName}`}
+            className="holiday-card"
+          >
             <h3>{holiday.localName}</h3>
             <p className="en-name">{holiday.name}</p>
-            <p className="date">📅 {holiday.date}</p>
-            <p className="days-left">
-              ⏳ {getDaysLeft(holiday.date)} days left
-            </p>
+            <div className="date-row">
+              <span className="date">{holiday.date}</span>
+              <span className="days-left">
+                ⏳ {getDaysLeft(holiday.date)} days left
+              </span>
+            </div>
             <p className="type">
-              🌍 {holiday.global ? "Global holiday" : "Regional"}
+              {holiday.global ? "🌍 Global holiday" : "🏛️ Regional holiday"}
             </p>
+
             <div className="tags">
               {holiday.types?.map((type) => (
                 <span key={type} className="tag">
-                  {type}
+                  {getTypeEmoji(type)} {type}
                 </span>
               ))}
             </div>
           </div>
         ))}
       </div>
+
+      {visibleCount < upcoming.length && (
+        <div className="toggle-wrapper">
+          <button className="toggle-button" onClick={handleShowMore}>
+            Show more
+          </button>
+        </div>
+      )}
     </>
   );
 };
