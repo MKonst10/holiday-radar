@@ -26,13 +26,14 @@ function App() {
   useEffect(() => {
     const loadCountries = async () => {
       try {
-        const res = await fetch("https://restcountries.com/v3.1/all");
+        const res = await fetch(
+          "https://date.nager.at/api/v3/AvailableCountries"
+        );
         const data = await res.json();
         const parsed = data
-          .filter((c) => c.cca2 && c.name?.common)
           .map((c) => ({
-            code: c.cca2,
-            name: c.name.common,
+            code: c.countryCode,
+            name: c.name,
           }))
           .sort((a, b) => a.name.localeCompare(b.name));
         setCountries(parsed);
@@ -71,20 +72,29 @@ function App() {
 
         <div className="country-select">
           <label htmlFor="country">Choose a country: </label>
-          <select
-            id="country"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-          >
-            <option value="" disabled>
-              Select...
-            </option>
-            {countries.map((opt) => (
-              <option key={opt.code} value={opt.code}>
-                {opt.name}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {countryCode && (
+              <img
+                src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
+                alt={`${countryCode} flag`}
+                className="flag-icon"
+              />
+            )}
+            <select
+              id="country"
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+            >
+              <option value="" disabled>
+                Select...
               </option>
-            ))}
-          </select>
+              {countries.map((opt) => (
+                <option key={opt.code} value={opt.code}>
+                  {opt.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {error && (

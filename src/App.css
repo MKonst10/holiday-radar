@@ -84,3 +84,12 @@
   background-color: #ffffff;
   color: #000;
 }
+
+.flag-icon {
+  width: 24px;
+  height: auto;
+  vertical-align: middle;
+  margin-right: 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
