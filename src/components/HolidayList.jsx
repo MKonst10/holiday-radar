@@ -1,4 +1,5 @@
 import { useState } from "react";
+import RadarLoader from "./RadarLoader";
 import "./HolidayList.css";
 
 const HolidayList = ({ holidays, loading }) => {
@@ -22,6 +23,10 @@ const HolidayList = ({ holidays, loading }) => {
         return "📅";
     }
   };
+
+  if (loading) {
+    return <RadarLoader />;
+  }
 
   if ((!holidays || holidays.length === 0) && loading) {
     return null;

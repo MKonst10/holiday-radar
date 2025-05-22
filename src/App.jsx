@@ -7,8 +7,12 @@ import radarIcon from "./assets/icons/radar.svg";
 import "./App.css";
 
 function App() {
-  const { countryCode: detectedCountryCode, error } = useGeolocation();
-
+  const {
+    location,
+    countryCode: detectedCountryCode,
+    error,
+    loading: geoLoading,
+  } = useGeolocation();
   const [countryCode, setCountryCode] = useState("");
   const [countries, setCountries] = useState([]);
   const [holidays, setHolidays] = useState([]);
@@ -101,8 +105,11 @@ function App() {
         )}
       </div>
 
-      {loading && <RadarLoader />}
-      {!loading && <HolidayList holidays={holidays} loading={loading} />}
+      <HolidayList
+        holidays={holidays}
+        loading={loading || geoLoading}
+        key={countryCode}
+      />
     </div>
   );
 }
