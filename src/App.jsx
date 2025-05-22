@@ -2,13 +2,11 @@ import { useEffect, useState } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
-import RadarLoader from "./components/RadarLoader";
 import radarIcon from "./assets/icons/radar.svg";
 import "./App.css";
 
 function App() {
   const {
-    location,
     countryCode: detectedCountryCode,
     error,
     loading: geoLoading,
