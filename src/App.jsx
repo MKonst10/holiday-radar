@@ -6,11 +6,22 @@ import radarIcon from "./assets/icons/radar.svg";
 import "./App.css";
 
 function App() {
-  const { location } = useGeolocation();
+  const {
+    location,
+    countryCode: detectedCountryCode,
+    error,
+  } = useGeolocation();
+
   const [countryCode, setCountryCode] = useState("");
   const [countries, setCountries] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (detectedCountryCode && !countryCode) {
+      setCountryCode(detectedCountryCode);
+    }
+  }, [detectedCountryCode, countryCode]);
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -32,23 +43,6 @@ function App() {
 
     loadCountries();
   }, []);
-
-  useEffect(() => {
-    const detectCountry = async () => {
-      if (!location || countryCode) return;
-
-      try {
-        const res = await fetch(
-          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${location.lat}&longitude=${location.lon}&localityLanguage=en`
-        );
-        const geo = await res.json();
-        if (geo.countryCode) setCountryCode(geo.countryCode);
-      } catch (e) {
-        console.warn("Could not resolve country code");
-      }
-    };
-    detectCountry();
-  }, [location, countryCode]);
 
   useEffect(() => {
     const load = async () => {
@@ -92,6 +86,12 @@ function App() {
             ))}
           </select>
         </div>
+
+        {error && (
+          <p className="error-message" style={{ marginTop: "10px" }}>
+            {error}
+          </p>
+        )}
       </div>
 
       {loading && <p className="loading-message">Loading holidays...</p>}
