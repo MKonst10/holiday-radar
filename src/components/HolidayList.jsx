@@ -1,9 +1,15 @@
 import { useState } from "react";
 import RadarLoader from "./RadarLoader";
+import HolidayModal from "./HolidayModal";
 import "./HolidayList.css";
 
 const HolidayList = ({ holidays, loading }) => {
   const [visibleCount, setVisibleCount] = useState(5);
+  const [selectedHoliday, setSelectedHoliday] = useState(null);
+
+  const handleCardClick = (holiday) => {
+    setSelectedHoliday(holiday);
+  };
 
   const getTypeEmoji = (type) => {
     switch (type) {
@@ -63,6 +69,7 @@ const HolidayList = ({ holidays, loading }) => {
           <div
             key={`${holiday.date}-${holiday.localName}`}
             className="holiday-card"
+            onClick={() => handleCardClick(holiday)}
           >
             <h3>{holiday.localName}</h3>
             <p className="en-name">{holiday.name}</p>
@@ -93,6 +100,13 @@ const HolidayList = ({ holidays, loading }) => {
             Show more
           </button>
         </div>
+      )}
+
+      {selectedHoliday && (
+        <HolidayModal
+          holiday={selectedHoliday}
+          onClose={() => setSelectedHoliday(null)}
+        />
       )}
     </>
   );
