@@ -1,7 +1,14 @@
 import "./HolidayModal.css";
 import { useUnsplashImage } from "../hooks/useUnsplashImage";
+import useRegionNames from "../hooks/useRegionNames";
+import { useMemo } from "react";
 
 const HolidayModal = ({ holiday, onClose }) => {
+  const subdivisionCodes = useMemo(
+    () => holiday.counties || [],
+    [holiday.counties]
+  );
+  const regionNames = useRegionNames(subdivisionCodes);
   const { imageUrl, loading: imageLoading } = useUnsplashImage(
     holiday?.name || ""
   );
@@ -34,9 +41,9 @@ const HolidayModal = ({ holiday, onClose }) => {
               <strong>🏷️ Types:</strong> {holiday.types.join(", ")}
             </p>
           )}
-          {holiday.counties && (
+          {regionNames.length > 0 && (
             <p>
-              <strong>📍 Applies to:</strong> {holiday.counties.join(", ")}
+              <strong>📍 Applies to:</strong> {regionNames.join(", ")}
             </p>
           )}
         </div>
