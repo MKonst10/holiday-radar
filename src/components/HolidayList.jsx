@@ -52,9 +52,14 @@ const HolidayList = ({ holidays, loading }) => {
   const visible = upcoming.slice(0, visibleCount);
 
   const getDaysLeft = (dateStr) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const target = new Date(dateStr);
+    target.setHours(0, 0, 0, 0);
+
     const diffTime = target.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
 
     const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
     return rtf.format(diffDays, "day");
