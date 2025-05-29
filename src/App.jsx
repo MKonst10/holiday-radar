@@ -29,12 +29,15 @@ function App() {
           "https://date.nager.at/api/v3/AvailableCountries"
         );
         const data = await res.json();
+
         const parsed = data
+          .filter((c) => !["RU", "BY"].includes(c.countryCode))
           .map((c) => ({
             code: c.countryCode,
             name: c.name,
           }))
           .sort((a, b) => a.name.localeCompare(b.name));
+
         setCountries(parsed);
       } catch (e) {
         console.error("Error loading country list:", e);

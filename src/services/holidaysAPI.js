@@ -22,6 +22,6 @@ export const fetchHolidays = async (countryCode) => {
   try {
     return JSON.parse(text);
   } catch (e) {
-    throw new Error("Invalid JSON from holidays API");
+    throw new Error(`Invalid JSON from holidays API: ${e}`);
   }
 };
