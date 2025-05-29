@@ -1,9 +1,12 @@
 import "./HolidayModal.css";
 import { useUnsplashImage } from "../hooks/useUnsplashImage";
 import useRegionNames from "../hooks/useRegionNames";
-import { useMemo } from "react";
+import { fetchHolidayDescriptions } from "../services/calendarificAPI";
+import { useMemo, useState, useEffect } from "react";
 
 const HolidayModal = ({ holiday, onClose }) => {
+  const [description, setDescription] = useState("");
+
   const subdivisionCodes = useMemo(
     () => holiday.counties || [],
     [holiday.counties]
@@ -12,6 +15,32 @@ const HolidayModal = ({ holiday, onClose }) => {
   const { imageUrl, loading: imageLoading } = useUnsplashImage(
     holiday?.name || ""
   );
+
+  useEffect(() => {
+    const loadDescription = async () => {
+      if (!holiday?.name || !holiday?.date || !holiday?.countryCode) return;
+
+      try {
+        const year = new Date(holiday.date).getFullYear();
+        const data = await fetchHolidayDescriptions(holiday.countryCode, year);
+
+        const match = data.find(
+          (item) =>
+            item.name.toLowerCase().trim() ===
+              holiday.name.toLowerCase().trim() && item.date === holiday.date
+        );
+
+        if (match?.description) {
+          setDescription(match.description);
+        }
+      } catch (e) {
+        console.warn("Failed to load description:", e);
+      }
+    };
+
+    loadDescription();
+  }, [holiday]);
+
   if (!holiday) return null;
 
   return (
@@ -38,12 +67,17 @@ const HolidayModal = ({ holiday, onClose }) => {
           )}
           {holiday.types?.length > 0 && (
             <p>
-              <strong>🏷️ Types:</strong> {holiday.types.join(", ")}
+              <strong>🏷️ Type:</strong> {holiday.types.join(", ")}
             </p>
           )}
           {regionNames.length > 0 && (
             <p>
               <strong>📍 Applies to:</strong> {regionNames.join(", ")}
+            </p>
+          )}
+          {description && (
+            <p className="modal-description">
+              <strong>📝 Description:</strong> {description}
             </p>
           )}
         </div>
