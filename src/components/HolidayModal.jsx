@@ -6,6 +6,7 @@ import { useMemo, useState, useEffect } from "react";
 
 const HolidayModal = ({ holiday, onClose }) => {
   const [description, setDescription] = useState("");
+  const [isLoaded, setIsLoaded] = useState("");
 
   const subdivisionCodes = useMemo(
     () => holiday.counties || [],
@@ -55,8 +56,14 @@ const HolidayModal = ({ holiday, onClose }) => {
 
         <div className="modal-detail">
           <p>
-            <strong>📅 Date:</strong> {holiday.date}
+            <strong>📅 Date:</strong>{" "}
+            {new Date(holiday.date).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
+
           <p>
             <strong>🌐 Global:</strong> {holiday.global ? "Yes" : "No"}
           </p>
@@ -86,11 +93,13 @@ const HolidayModal = ({ holiday, onClose }) => {
           <img
             src={imageUrl || "/fallback.jpg"}
             alt={holiday.name}
-            className={`modal-image ${imageUrl ? "loaded" : ""}`}
-            onLoad={(e) => e.target.classList.add("loaded")}
+            loading="lazy"
+            className={`modal-image ${isLoaded ? "loaded" : ""}`}
+            onLoad={() => setIsLoaded(true)}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "/fallback.jpg";
+              setIsLoaded(true);
             }}
           />
         )}

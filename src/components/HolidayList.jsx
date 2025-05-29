@@ -55,7 +55,9 @@ const HolidayList = ({ holidays, loading }) => {
     const target = new Date(dateStr);
     const diffTime = target.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+
+    const rtf = new Intl.RelativeTimeFormat(undefined, { numeric: "auto" });
+    return rtf.format(diffDays, "day");
   };
 
   const handleShowMore = () => {
@@ -74,10 +76,14 @@ const HolidayList = ({ holidays, loading }) => {
             <h3>{holiday.localName}</h3>
             <p className="en-name">{holiday.name}</p>
             <div className="date-row">
-              <span className="date">{holiday.date}</span>
-              <span className="days-left">
-                ⏳ {getDaysLeft(holiday.date)} days left
+              <span className="date">
+                {new Date(holiday.date).toLocaleDateString(undefined, {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </span>
+              <span className="days-left">⏳ {getDaysLeft(holiday.date)}</span>
             </div>
             <p className="type">
               {holiday.global ? "🌍 Global holiday" : "🏛️ Regional holiday"}

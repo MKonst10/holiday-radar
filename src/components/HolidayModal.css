@@ -46,12 +46,14 @@
   width: 100%;
   height: auto;
   object-fit: cover;
-  transition: opacity 0.4s ease;
   opacity: 0;
+  transform: scale(0.98);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .modal-image.loaded {
   opacity: 1;
+  transform: scale(1);
 }
 
 @keyframes fadeIn {
