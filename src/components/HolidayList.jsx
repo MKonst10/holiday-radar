@@ -30,17 +30,10 @@ const HolidayList = ({ holidays, loading }) => {
     }
   };
 
-  if (loading) {
-    return <RadarLoader />;
-  }
-
-  if ((!holidays || holidays.length === 0) && loading) {
-    return null;
-  }
-
-  if (!holidays || holidays.length === 0) {
+  if (loading) return <RadarLoader />;
+  if ((!holidays || holidays.length === 0) && loading) return null;
+  if (!holidays || holidays.length === 0)
     return <p className="empty-message">No holidays to show.</p>;
-  }
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -72,37 +65,42 @@ const HolidayList = ({ holidays, loading }) => {
   return (
     <>
       <div className="holiday-grid">
-        {visible.map((holiday) => (
-          <div
-            key={`${holiday.date}-${holiday.localName}`}
-            className="holiday-card"
-            onClick={() => handleCardClick(holiday)}
-          >
-            <h3>{holiday.localName}</h3>
-            <p className="en-name">{holiday.name}</p>
-            <div className="date-row">
-              <span className="date">
-                {new Date(holiday.date).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-              <span className="days-left">⏳ {getDaysLeft(holiday.date)}</span>
-            </div>
-            <p className="type">
-              {holiday.global ? "🌍 Global holiday" : "🏛️ Regional holiday"}
-            </p>
+        {visible.map((holiday) => {
+          const holidayDate = new Date(holiday.date);
+          holidayDate.setHours(0, 0, 0, 0);
+          const isToday = holidayDate.getTime() === today.getTime();
 
-            <div className="tags">
-              {holiday.types?.map((type) => (
-                <span key={type} className="tag">
-                  {getTypeEmoji(type)} {type}
+          return (
+            <div
+              key={`${holiday.date}-${holiday.localName}`}
+              className={isToday ? "holiday-card today" : "holiday-card"}
+              onClick={() => handleCardClick(holiday)}
+            >
+              <h3>{holiday.localName}</h3>
+              <p className="en-name">{holiday.name}</p>
+              <div className="date-row">
+                <span className="date">
+                  {holidayDate.toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </span>
-              ))}
+                {isToday ? <span className="today-badge">🎉 Today</span> : <span className="days-left">⏳ {getDaysLeft(holiday.date)}</span>}
+              </div>
+              <p className="type">
+                {holiday.global ? "🌍 Global holiday" : "🏛️ Regional holiday"}
+              </p>
+              <div className="tags">
+                {holiday.types?.map((type) => (
+                  <span key={type} className="tag">
+                    {getTypeEmoji(type)} {type}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {visibleCount < upcoming.length && (
