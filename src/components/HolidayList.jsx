@@ -3,13 +3,18 @@ import RadarLoader from "./RadarLoader";
 import HolidayModal from "./HolidayModal";
 import "./HolidayList.css";
 
-const HolidayList = ({ holidays, loading }) => {
+const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
   const [visibleCount, setVisibleCount] = useState(5);
   const [selectedHoliday, setSelectedHoliday] = useState(null);
 
   const handleCardClick = (holiday) => {
     setSelectedHoliday(holiday);
   };
+
+  const isFavorite = (holiday) =>
+    favorites.some(
+      (h) => h.date === holiday.date && h.localName === holiday.localName
+    );
 
   const getTypeEmoji = (type) => {
     switch (type) {
@@ -78,6 +83,16 @@ const HolidayList = ({ holidays, loading }) => {
             >
               <h3>{holiday.localName}</h3>
               <p className="en-name">{holiday.name}</p>
+              <div
+                className="favorite-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleFavorite(holiday);
+                }}
+              >
+                {isFavorite(holiday) ? "⭐" : "☆"}
+              </div>
+
               <div className="date-row">
                 <span className="date">
                   {holidayDate.toLocaleDateString(undefined, {
@@ -86,7 +101,13 @@ const HolidayList = ({ holidays, loading }) => {
                     day: "numeric",
                   })}
                 </span>
-                {isToday ? <span className="today-badge">🎉 Today</span> : <span className="days-left">⏳ {getDaysLeft(holiday.date)}</span>}
+                {isToday ? (
+                  <span className="today-badge">🎉 Today</span>
+                ) : (
+                  <span className="days-left">
+                    ⏳ {getDaysLeft(holiday.date)}
+                  </span>
+                )}
               </div>
               <p className="type">
                 {holiday.global ? "🌍 Global holiday" : "🏛️ Regional holiday"}

@@ -15,6 +15,11 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState(() => {
+  const stored = localStorage.getItem("favorites");
+  return stored ? JSON.parse(stored) : [];
+});
+
 
   useEffect(() => {
     if (detectedCountryCode && !countryCode) {
@@ -63,6 +68,26 @@ function App() {
     load();
   }, [countryCode]);
 
+
+  useEffect(() => {
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+  }, [favorites]);
+
+  const toggleFavorite = (holiday) => {
+    setFavorites((prev) => {
+      const exists = prev.some(
+        (h) => h.date === holiday.date && h.localName === holiday.localName
+      );
+      if (exists) {
+        return prev.filter(
+          (h) => !(h.date === holiday.date && h.localName === holiday.localName)
+        );
+      } else {
+        return [...prev, holiday];
+      }
+    });
+  };
+
   return (
     <div className="app-container">
       <div className="app-header">
@@ -110,6 +135,8 @@ function App() {
         holidays={holidays}
         loading={loading || geoLoading}
         key={countryCode}
+        favorites={favorites}
+        onToggleFavorite={toggleFavorite}
       />
     </div>
   );
