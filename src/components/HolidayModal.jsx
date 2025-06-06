@@ -4,6 +4,7 @@ import useRegionNames from "../hooks/useRegionNames";
 import { fetchHolidayDescriptions } from "../services/calendarificAPI";
 import { createShareMessage } from "../utils/shareMessage";
 import { useMemo, useState, useEffect } from "react";
+import { XMarkIcon, ShareIcon } from "@heroicons/react/24/outline";
 
 const HolidayModal = ({ holiday, onClose }) => {
   const [description, setDescription] = useState("");
@@ -63,11 +64,15 @@ const HolidayModal = ({ holiday, onClose }) => {
         <div className="holiday-banner">🎉 Happy Holiday!</div>
       )}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-share" onClick={handleShare}>
-          📤
+        <button
+          className="modal-share"
+          onClick={handleShare}
+          aria-label="Share"
+        >
+          <ShareIcon className="icon" />
         </button>
-        <button className="modal-close" onClick={onClose}>
-          ×
+        <button className="modal-close" onClick={onClose} aria-label="Close">
+          <XMarkIcon className="icon" />
         </button>
 
         <h2>{holiday.localName}</h2>
