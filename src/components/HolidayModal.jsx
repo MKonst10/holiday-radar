@@ -2,11 +2,13 @@ import "./HolidayModal.css";
 import { useUnsplashImage } from "../hooks/useUnsplashImage";
 import useRegionNames from "../hooks/useRegionNames";
 import { fetchHolidayDescriptions } from "../services/calendarificAPI";
+import { createShareMessage } from "../utils/shareMessage";
 import { useMemo, useState, useEffect } from "react";
 
 const HolidayModal = ({ holiday, onClose }) => {
   const [description, setDescription] = useState("");
   const [isLoaded, setIsLoaded] = useState("");
+  const { title, text } = createShareMessage(holiday);
 
   const subdivisionCodes = useMemo(
     () => holiday.counties || [],
@@ -16,6 +18,17 @@ const HolidayModal = ({ holiday, onClose }) => {
   const { imageUrl, loading: imageLoading } = useUnsplashImage(
     holiday?.name || ""
   );
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title,
+        text,
+      });
+    } catch (err) {
+      console.warn("Share failed:", err);
+    }
+  };
 
   useEffect(() => {
     const loadDescription = async () => {
@@ -62,6 +75,10 @@ const HolidayModal = ({ holiday, onClose }) => {
               month: "long",
               day: "numeric",
             })}
+            {new Date(holiday.date).toDateString() ===
+              new Date().toDateString() && (
+              <p className="today-badge">🎉 Happy Holiday!</p>
+            )}
           </p>
 
           <p>
@@ -103,6 +120,9 @@ const HolidayModal = ({ holiday, onClose }) => {
             }}
           />
         )}
+        <button className="share-button" onClick={() => handleShare(holiday)}>
+          📤 Share
+        </button>
       </div>
     </div>
   );

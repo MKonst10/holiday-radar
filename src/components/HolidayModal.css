@@ -56,6 +56,29 @@
   transform: scale(1);
 }
 
+.share-button {
+  margin-top: 16px;
+  padding: 8px 12px;
+  font-size: 14px;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.share-button:hover {
+  background-color: #0056b3;
+}
+
+.today-badge {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgb(0 130 255);
+  margin-top: 10px;
+}
+
 @keyframes fadeIn {
   from {
     transform: scale(0.95);
