@@ -13,7 +13,8 @@
 }
 .holiday-banner {
   position: absolute;
-  top: 80px;
+  top: -60px;
+  left: 0;
   text-align: center;
   width: 100%;
   font-size: 24px;
@@ -52,11 +53,12 @@
   justify-content: center;
   color: #555;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .modal-close:hover {
-  color: #000;
+  color: #007bff;
+  transform: scale(1.05);
 }
 
 h2 {
@@ -116,7 +118,7 @@ h2 {
   justify-content: center;
   color: #555;
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .modal-share:focus {
@@ -126,7 +128,8 @@ h2 {
 }
 
 .modal-share:hover {
-  color: #000;
+  color: #007bff;
+  transform: scale(1.05);
 }
 
 .today-badge {

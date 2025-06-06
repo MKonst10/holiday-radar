@@ -60,10 +60,11 @@ const HolidayModal = ({ holiday, onClose }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      {new Date(holiday.date).toDateString() === new Date().toDateString() && (
-        <div className="holiday-banner">🎉 Happy Holiday!</div>
-      )}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        {new Date(holiday.date).toDateString() ===
+          new Date().toDateString() && (
+          <div className="holiday-banner">🎉 Happy Holiday!</div>
+        )}
         <button
           className="modal-share"
           onClick={handleShare}
