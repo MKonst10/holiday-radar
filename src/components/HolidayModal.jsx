@@ -59,9 +59,15 @@ const HolidayModal = ({ holiday, onClose }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
+      {new Date(holiday.date).toDateString() === new Date().toDateString() && (
+        <div className="holiday-banner">🎉 Happy Holiday!</div>
+      )}
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <button className="modal-share" onClick={handleShare}>
+          📤
+        </button>
         <button className="modal-close" onClick={onClose}>
-          ✖
+          ×
         </button>
 
         <h2>{holiday.localName}</h2>
@@ -75,10 +81,6 @@ const HolidayModal = ({ holiday, onClose }) => {
               month: "long",
               day: "numeric",
             })}
-            {new Date(holiday.date).toDateString() ===
-              new Date().toDateString() && (
-              <p className="today-badge">🎉 Happy Holiday!</p>
-            )}
           </p>
 
           <p>
@@ -120,9 +122,6 @@ const HolidayModal = ({ holiday, onClose }) => {
             }}
           />
         )}
-        <button className="share-button" onClick={() => handleShare(holiday)}>
-          📤 Share
-        </button>
       </div>
     </div>
   );
