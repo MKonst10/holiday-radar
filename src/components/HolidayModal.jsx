@@ -76,16 +76,18 @@ const HolidayModal = ({ holiday, onClose }) => {
             <SparklesIcon className="icon today" /> Happy Holiday!
           </div>
         )}
-        <button
-          className="modal-share"
-          onClick={handleShare}
-          aria-label="Share"
-        >
-          <ShareIcon className="icon" />
-        </button>
-        <button className="modal-close" onClick={onClose} aria-label="Close">
-          <XMarkIcon className="icon" />
-        </button>
+        <div className="modal-buttons">
+          <button
+            className="modal-share"
+            onClick={handleShare}
+            aria-label="Share"
+          >
+            <ShareIcon className="icon" />
+          </button>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
+            <XMarkIcon className="icon" />
+          </button>
+        </div>
 
         <h2>{holiday.localName}</h2>
         <p className="modal-sub">{holiday.name}</p>
