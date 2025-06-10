@@ -52,7 +52,7 @@ const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
     }
   };
 
-  if (loading) return <RadarLoader />;
+  if (loading) return <RadarLoader content="list" />;
   if ((!holidays || holidays.length === 0) && loading) return null;
   if (!holidays || holidays.length === 0)
     return <p className="empty-message">No holidays to show.</p>;

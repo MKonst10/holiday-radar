@@ -72,9 +72,11 @@ h2 {
 .modal-detail p strong {
   display: flex;
   gap: 3px;
+  white-space: nowrap;
 }
 
-.modal-description {
+.modal-description,
+.modal-regions {
   flex-direction: column;
 }
 
@@ -84,15 +86,8 @@ h2 {
   width: 100%;
   height: auto;
   object-fit: cover;
-  opacity: 0;
-  transform: scale(0.98);
-  transition: opacity 0.4s ease, transform 0.4s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.modal-image.loaded {
-  opacity: 1;
-  transform: scale(1);
+  aspect-ratio: 6 / 4;
 }
 .modal-buttons {
   display: flex;

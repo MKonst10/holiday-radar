@@ -12,12 +12,14 @@ import {
   TagIcon as TypeIcon,
   MapPinIcon as PinIcon,
   DocumentTextIcon as DescriptionIcon,
+  RocketLaunchIcon as LaunchYearIcon,
 } from "@heroicons/react/24/outline";
 import { SparklesIcon } from "@heroicons/react/24/solid";
+import RadarLoader from "./RadarLoader";
 
 const HolidayModal = ({ holiday, onClose }) => {
   const [description, setDescription] = useState("");
-  const [isLoaded, setIsLoaded] = useState("");
+  const [descriptionLoading, setDescriptionLoading] = useState(true);
   const { title, text } = createShareMessage(holiday);
 
   const subdivisionCodes = useMemo(
@@ -40,9 +42,14 @@ const HolidayModal = ({ holiday, onClose }) => {
     }
   };
 
+  const modalLoading = imageLoading || descriptionLoading;
+
   useEffect(() => {
     const loadDescription = async () => {
-      if (!holiday?.name || !holiday?.date || !holiday?.countryCode) return;
+      if (!holiday?.name || !holiday?.date || !holiday?.countryCode) {
+        setDescriptionLoading(false);
+        return;
+      }
 
       try {
         const year = new Date(holiday.date).getFullYear();
@@ -59,6 +66,8 @@ const HolidayModal = ({ holiday, onClose }) => {
         }
       } catch (e) {
         console.warn("Failed to load description:", e);
+      } finally {
+        setDescriptionLoading(false);
       }
     };
 
@@ -69,93 +78,100 @@ const HolidayModal = ({ holiday, onClose }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {new Date(holiday.date).toDateString() ===
-          new Date().toDateString() && (
-          <div className="holiday-banner">
-            <SparklesIcon className="icon today" /> Happy Holiday!
+      {modalLoading ? (
+        <RadarLoader content="card" />
+      ) : (
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          {new Date(holiday.date).toDateString() ===
+            new Date().toDateString() && (
+            <div className="holiday-banner">
+              <SparklesIcon className="icon today" /> Happy Holiday!
+            </div>
+          )}
+          <div className="modal-buttons">
+            <button
+              className="modal-share"
+              onClick={handleShare}
+              aria-label="Share"
+            >
+              <ShareIcon className="icon" />
+            </button>
+            <button
+              className="modal-close"
+              onClick={onClose}
+              aria-label="Close"
+            >
+              <XMarkIcon className="icon" />
+            </button>
           </div>
-        )}
-        <div className="modal-buttons">
-          <button
-            className="modal-share"
-            onClick={handleShare}
-            aria-label="Share"
-          >
-            <ShareIcon className="icon" />
-          </button>
-          <button className="modal-close" onClick={onClose} aria-label="Close">
-            <XMarkIcon className="icon" />
-          </button>
-        </div>
 
-        <h2>{holiday.localName}</h2>
-        <p className="modal-sub">{holiday.name}</p>
+          <h2>{holiday.localName}</h2>
+          <p className="modal-sub">{holiday.name}</p>
 
-        <div className="modal-detail">
-          <p>
-            <strong>
-              <CalendarIcon className="icon" /> Date:
-            </strong>{" "}
-            {new Date(holiday.date).toLocaleDateString(undefined, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </p>
-
-          <p>
-            <strong>
-              <GlobalIcon className="icon" /> Global:
-            </strong>{" "}
-            {holiday.global ? "Yes" : "No"}
-          </p>
-          {holiday.launchYear && (
-            <p>
-              <strong>🚀 Launch year:</strong> {holiday.launchYear}
-            </p>
-          )}
-          {holiday.types?.length > 0 && (
+          <div className="modal-detail">
             <p>
               <strong>
-                <TypeIcon className="icon" /> Type:
+                <CalendarIcon className="icon" /> Date:
               </strong>{" "}
-              {holiday.types.join(", ")}
+              {new Date(holiday.date).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
-          )}
-          {regionNames.length > 0 && (
+
             <p>
               <strong>
-                <PinIcon className="icon" /> Applies to:
+                <GlobalIcon className="icon" /> Global:
               </strong>{" "}
-              {regionNames.join(", ")}
+              {holiday.global ? "Yes" : "No"}
             </p>
-          )}
-          {description && (
-            <p className="modal-description">
-              <strong>
-                <DescriptionIcon className="icon" /> Description:
-              </strong>{" "}
-              {description}
-            </p>
-          )}
-        </div>
+            {holiday.launchYear && (
+              <p>
+                <strong>
+                  <LaunchYearIcon /> Launch year:
+                </strong>{" "}
+                {holiday.launchYear}
+              </p>
+            )}
+            {holiday.types?.length > 0 && (
+              <p>
+                <strong>
+                  <TypeIcon className="icon" /> Type:
+                </strong>{" "}
+                {holiday.types.join(", ")}
+              </p>
+            )}
+            {regionNames.length > 0 && (
+              <p className="modal-regions">
+                <strong>
+                  <PinIcon className="icon" /> Applies to:
+                </strong>{" "}
+                {regionNames.join(", ")}
+              </p>
+            )}
+            {description && (
+              <p className="modal-description">
+                <strong>
+                  <DescriptionIcon className="icon" /> Description:
+                </strong>{" "}
+                {description}
+              </p>
+            )}
+          </div>
 
-        {!imageLoading && imageUrl && (
           <img
             src={imageUrl || "/fallback.jpg"}
             alt={holiday.name}
-            loading="lazy"
-            className={`modal-image ${isLoaded ? "loaded" : ""}`}
-            onLoad={() => setIsLoaded(true)}
+            className={`modal-image`}
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "/fallback.jpg";
-              setIsLoaded(true);
             }}
+            style={{ display: imageUrl ? "block" : "none" }}
           />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
