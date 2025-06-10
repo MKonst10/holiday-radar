@@ -4,7 +4,16 @@ import useRegionNames from "../hooks/useRegionNames";
 import { fetchHolidayDescriptions } from "../services/calendarificAPI";
 import { createShareMessage } from "../utils/shareMessage";
 import { useMemo, useState, useEffect } from "react";
-import { XMarkIcon, ShareIcon } from "@heroicons/react/24/outline";
+import {
+  XMarkIcon,
+  ShareIcon,
+  GlobeAltIcon as GlobalIcon,
+  CalendarDaysIcon as CalendarIcon,
+  TagIcon as TypeIcon,
+  MapPinIcon as PinIcon,
+  DocumentTextIcon as DescriptionIcon,
+} from "@heroicons/react/24/outline";
+import { SparklesIcon } from "@heroicons/react/24/solid";
 
 const HolidayModal = ({ holiday, onClose }) => {
   const [description, setDescription] = useState("");
@@ -63,7 +72,9 @@ const HolidayModal = ({ holiday, onClose }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         {new Date(holiday.date).toDateString() ===
           new Date().toDateString() && (
-          <div className="holiday-banner">🎉 Happy Holiday!</div>
+          <div className="holiday-banner">
+            <SparklesIcon className="icon today" /> Happy Holiday!
+          </div>
         )}
         <button
           className="modal-share"
@@ -81,7 +92,9 @@ const HolidayModal = ({ holiday, onClose }) => {
 
         <div className="modal-detail">
           <p>
-            <strong>📅 Date:</strong>{" "}
+            <strong>
+              <CalendarIcon className="icon" /> Date:
+            </strong>{" "}
             {new Date(holiday.date).toLocaleDateString(undefined, {
               year: "numeric",
               month: "long",
@@ -90,7 +103,10 @@ const HolidayModal = ({ holiday, onClose }) => {
           </p>
 
           <p>
-            <strong>🌐 Global:</strong> {holiday.global ? "Yes" : "No"}
+            <strong>
+              <GlobalIcon className="icon" /> Global:
+            </strong>{" "}
+            {holiday.global ? "Yes" : "No"}
           </p>
           {holiday.launchYear && (
             <p>
@@ -99,17 +115,26 @@ const HolidayModal = ({ holiday, onClose }) => {
           )}
           {holiday.types?.length > 0 && (
             <p>
-              <strong>🏷️ Type:</strong> {holiday.types.join(", ")}
+              <strong>
+                <TypeIcon className="icon" /> Type:
+              </strong>{" "}
+              {holiday.types.join(", ")}
             </p>
           )}
           {regionNames.length > 0 && (
             <p>
-              <strong>📍 Applies to:</strong> {regionNames.join(", ")}
+              <strong>
+                <PinIcon className="icon" /> Applies to:
+              </strong>{" "}
+              {regionNames.join(", ")}
             </p>
           )}
           {description && (
             <p className="modal-description">
-              <strong>📝 Description:</strong> {description}
+              <strong>
+                <DescriptionIcon className="icon" /> Description:
+              </strong>{" "}
+              {description}
             </p>
           )}
         </div>

@@ -25,6 +25,10 @@
   pointer-events: none;
   opacity: 0;
   animation: holidayFadeIn 0.8s ease-in-out forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
 }
 
 .modal-content {
