@@ -56,6 +56,12 @@
   transition: all 0.2s ease;
 }
 
+.modal-close:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+
 .modal-close:hover {
   color: #007bff;
   transform: scale(1.05);
@@ -136,6 +142,9 @@ h2 {
   color: #007bff;
   margin-top: 10px;
   text-align: center;
+  display: flex;
+  align-items: flex-start;
+  gap: 3px;
 }
 
 @keyframes fadeIn {

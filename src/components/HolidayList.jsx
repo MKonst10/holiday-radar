@@ -1,6 +1,23 @@
 import { useState } from "react";
 import RadarLoader from "./RadarLoader";
 import HolidayModal from "./HolidayModal";
+import {
+  StarIcon as StarIconOutline,
+  SparklesIcon as TodayIcon,
+  BuildingLibraryIcon as RegionalIcon,
+  GlobeAltIcon as GlobalIcon,
+  ClockIcon as TimeLeftIcon,
+} from "@heroicons/react/24/outline";
+import {
+  AcademicCapIcon as SchoolIcon,
+  BanknotesIcon as BankIcon,
+  BuildingOfficeIcon as AuthoritiesIcon,
+  CalendarDaysIcon as CalendarIcon,
+  EyeIcon as ObservanceIcon,
+  SparklesIcon as OptionalIcon,
+  StarIcon as StarIconSolid,
+  SunIcon as PublicIcon,
+} from "@heroicons/react/24/solid";
 import "./HolidayList.css";
 
 const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
@@ -16,22 +33,22 @@ const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
       (h) => h.date === holiday.date && h.localName === holiday.localName
     );
 
-  const getTypeEmoji = (type) => {
+  const getTypeIcon = (type) => {
     switch (type) {
       case "Public":
-        return "🏖️";
+        return <PublicIcon className="icon" />;
       case "Bank":
-        return "🏦";
+        return <BankIcon className="icon" />;
       case "School":
-        return "🎓";
+        return <SchoolIcon className="icon" />;
       case "Authorities":
-        return "🏢";
+        return <AuthoritiesIcon className="icon" />;
       case "Optional":
-        return "🕊️";
+        return <OptionalIcon className="icon" />;
       case "Observance":
-        return "🕯️";
+        return <ObservanceIcon className="icon" />;
       default:
-        return "📅";
+        return <CalendarIcon className="icon" />;
     }
   };
 
@@ -90,7 +107,11 @@ const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
                   onToggleFavorite(holiday);
                 }}
               >
-                {isFavorite(holiday) ? "⭐" : "☆"}
+                {isFavorite(holiday) ? (
+                  <StarIconSolid className="favorite-icon active" />
+                ) : (
+                  <StarIconOutline className="favorite-icon" />
+                )}
               </div>
 
               <div className="date-row">
@@ -102,20 +123,31 @@ const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
                   })}
                 </span>
                 {isToday ? (
-                  <span className="today-badge">🎉 Today</span>
+                  <span className="today-badge">
+                    <TodayIcon className="icon" /> Today
+                  </span>
                 ) : (
                   <span className="days-left">
-                    ⏳ {getDaysLeft(holiday.date)}
+                    <TimeLeftIcon className="icon" />
+                    {getDaysLeft(holiday.date)}
                   </span>
                 )}
               </div>
               <p className="type">
-                {holiday.global ? "🌍 Global holiday" : "🏛️ Regional holiday"}
+                {holiday.global ? (
+                  <>
+                    <GlobalIcon className="icon" /> Global holiday
+                  </>
+                ) : (
+                  <>
+                    <RegionalIcon className="icon" /> Regional holiday
+                  </>
+                )}
               </p>
               <div className="tags">
                 {holiday.types?.map((type) => (
                   <span key={type} className="tag">
-                    {getTypeEmoji(type)} {type}
+                    {getTypeIcon(type)} {type}
                   </span>
                 ))}
               </div>
