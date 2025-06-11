@@ -1,7 +1,7 @@
 import "./HolidayModal.css";
 import { useUnsplashImage } from "../hooks/useUnsplashImage";
 import useRegionNames from "../hooks/useRegionNames";
-import { fetchHolidayDescriptions } from "../services/calendarificAPI";
+import { fetchWikipediaSummary } from "../services/fetchWikipediaSummary";
 import { createShareMessage } from "../utils/shareMessage";
 import { useMemo, useState, useEffect } from "react";
 import {
@@ -44,35 +44,26 @@ const HolidayModal = ({ holiday, onClose }) => {
 
   const modalLoading = imageLoading || descriptionLoading;
 
-  useEffect(() => {
-    const loadDescription = async () => {
-      if (!holiday?.name || !holiday?.date || !holiday?.countryCode) {
-        setDescriptionLoading(false);
-        return;
-      }
+ useEffect(() => {
+  const loadDescription = async () => {
+    if (!holiday?.name) {
+      setDescriptionLoading(false);
+      return;
+    }
 
-      try {
-        const year = new Date(holiday.date).getFullYear();
-        const data = await fetchHolidayDescriptions(holiday.countryCode, year);
+    try {
+      const summary = await fetchWikipediaSummary(holiday.name, holiday.localName);
+      if (summary) setDescription(summary);
+    } catch (e) {
+      console.warn("Failed to load description:", e);
+    } finally {
+      setDescriptionLoading(false);
+    }
+  };
 
-        const match = data.find(
-          (item) =>
-            item.name.toLowerCase().trim() ===
-              holiday.name.toLowerCase().trim() && item.date === holiday.date
-        );
+  loadDescription();
+}, [holiday]);
 
-        if (match?.description) {
-          setDescription(match.description);
-        }
-      } catch (e) {
-        console.warn("Failed to load description:", e);
-      } finally {
-        setDescriptionLoading(false);
-      }
-    };
-
-    loadDescription();
-  }, [holiday]);
 
   if (!holiday) return null;
 
