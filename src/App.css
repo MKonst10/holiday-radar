@@ -68,6 +68,7 @@
 
 .favorites-toggle:hover {
   background-color: #dadada;
+  border: 1px solid #dee0e3;
 }
 
 .favorites-toggle:focus {

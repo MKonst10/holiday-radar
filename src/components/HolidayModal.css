@@ -160,17 +160,6 @@ h2 {
   color: #facc15;
 }
 
-.today-badge {
-  font-size: 16px;
-  font-weight: 600;
-  color: #007bff;
-  margin-top: 10px;
-  text-align: center;
-  display: flex;
-  align-items: flex-start;
-  gap: 3px;
-}
-
 @keyframes fadeIn {
   from {
     transform: scale(0.95);

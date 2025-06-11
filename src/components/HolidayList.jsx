@@ -78,19 +78,25 @@ const HolidayList = ({
             month: "long",
             day: "numeric",
           });
+          console.log(holiday);
 
           return (
             <div
               key={`${holiday.date}-${holiday.localName}`}
-              className="holiday-item"
+              className={`holiday-item ${isToday ? "today-highlight" : ""}`}
               onClick={() => handleCardClick(holiday)}
             >
               <div className="holiday-info">
-                <p className="holiday-type">National Holiday</p>
+                <p className="holiday-type">
+                  {holiday.types && holiday.types.length > 0
+                    ? `${holiday.types[0]} Holiday`
+                    : "National Holiday"}
+                </p>
+
                 <h3 className="holiday-name">{holiday.name}</h3>
                 <p className="holiday-date">
                   {formattedDate} ·{" "}
-                  <span className="holiday-days">
+                  <span className={`holiday-days ${isToday ? "today" : ""}`}>
                     {isToday ? "Today" : getDaysLeft(holiday.date)}
                   </span>
                 </p>
@@ -98,6 +104,7 @@ const HolidayList = ({
 
               <div className="holiday-preview">
                 <UnsplashImagePreview name={holiday.name} />
+                {isToday && <span className="today-badge">Today</span>}
               </div>
             </div>
           );
