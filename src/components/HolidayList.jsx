@@ -20,7 +20,7 @@ import {
 } from "@heroicons/react/24/solid";
 import "./HolidayList.css";
 
-const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
+const HolidayList = ({ holidays, loading, favorites, onToggleFavorite, showFavorites }) => {
   const [visibleCount, setVisibleCount] = useState(5);
   const [selectedHoliday, setSelectedHoliday] = useState(null);
 
@@ -54,8 +54,14 @@ const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
 
   if (loading) return <RadarLoader content="list" />;
   if ((!holidays || holidays.length === 0) && loading) return null;
-  if (!holidays || holidays.length === 0)
-    return <p className="empty-message">No holidays to show.</p>;
+  if (!holidays || holidays.length === 0) {
+  return (
+    <p className="empty-message">
+      {showFavorites ? "No favorite holidays yet." : "No holidays to show."}
+    </p>
+  );
+}
+
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -83,6 +89,7 @@ const HolidayList = ({ holidays, loading, favorites, onToggleFavorite }) => {
   const handleShowMore = () => {
     setVisibleCount((prev) => prev + 5);
   };
+
 
   return (
     <>

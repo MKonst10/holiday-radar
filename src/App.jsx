@@ -19,6 +19,7 @@ function App() {
   const stored = localStorage.getItem("favorites");
   return stored ? JSON.parse(stored) : [];
 });
+  const [showFavorites, setShowFavorites] = useState(false);
 
 
   useEffect(() => {
@@ -124,6 +125,14 @@ function App() {
           </div>
         </div>
 
+        <button
+  onClick={() => setShowFavorites((prev) => !prev)}
+  className={`favorites-toggle`}
+>
+  {showFavorites ? "Show All" : "Show Favorites"}
+</button>
+
+
         {error && (
           <p className="error-message" style={{ marginTop: "10px" }}>
             {error}
@@ -132,11 +141,12 @@ function App() {
       </div>
 
       <HolidayList
-        holidays={holidays}
+        holidays={showFavorites ? favorites : holidays}
         loading={loading || geoLoading}
-        key={countryCode}
+        key={countryCode + showFavorites}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
+        showFavorites={showFavorites}
       />
     </div>
   );
