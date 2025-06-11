@@ -3,6 +3,7 @@ import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
 import radarIcon from "./assets/icons/radar.svg";
+import Select from "react-select";
 import "./App.css";
 
 function App() {
@@ -87,6 +88,46 @@ function App() {
     });
   };
 
+  const countryOptions = countries.map((opt) => ({
+    value: opt.code,
+    label: opt.name,
+    code: opt.code,
+  }));
+
+  const customSingleValue = ({ data }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <img
+        src={`https://flagcdn.com/w20/${data.code.toLowerCase()}.png`}
+        alt=""
+        style={{ width: "20px", height: "14px" }}
+      />
+      <span>{data.label}</span>
+    </div>
+  );
+
+  const customOption = (props) => {
+    const { data, innerRef, innerProps } = props;
+    return (
+      <div
+        ref={innerRef}
+        {...innerProps}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          padding: "6px 10px",
+        }}
+      >
+        <img
+          src={`https://flagcdn.com/w20/${data.code.toLowerCase()}.png`}
+          alt=""
+          style={{ width: "20px", height: "14px" }}
+        />
+        <span>{data.label}</span>
+      </div>
+    );
+  };
+
   return (
     <div className="app-container">
       <div className="app-header">
@@ -96,31 +137,28 @@ function App() {
         </div>
         <p>Explore upcoming holidays and plan your next adventure.</p>
 
-        <div className="country-select">
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {countryCode && (
-              <img
-                src={`https://flagcdn.com/w40/${countryCode.toLowerCase()}.png`}
-                alt={`${countryCode} flag`}
-                className="flag-icon"
-              />
-            )}
-            <select
-              id="country"
-              value={countryCode}
-              onChange={(e) => setCountryCode(e.target.value)}
-            >
-              <option value="" disabled>
-                Select...
-              </option>
-              {countries.map((opt) => (
-                <option key={opt.code} value={opt.code}>
-                  {opt.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+        <Select
+          options={countryOptions}
+          onChange={(selected) => setCountryCode(selected.value)}
+          value={countryOptions.find((opt) => opt.value === countryCode)}
+          components={{ SingleValue: customSingleValue, Option: customOption }}
+          placeholder="Select..."
+          isSearchable={false}
+          styles={{
+            control: (base) => ({
+              ...base,
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "12px",
+            }),
+            valueContainer: (base) => ({
+              ...base,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }),
+          }}
+        />
 
         <button
           onClick={() => setShowFavorites((prev) => !prev)}

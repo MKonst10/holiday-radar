@@ -92,8 +92,8 @@
   max-width: 400px;
 }
 
-.country-select select {
-  padding: 6px 12px;
+.country-select {
+  padding: 10px 12px;
   border-radius: 6px;
   font-size: 14px;
   width: 100%;
@@ -110,4 +110,9 @@
   vertical-align: middle;
   border-radius: 4px;
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+.custom-select__single-value {
+  display: flex;
+  align-items: center;
 }
