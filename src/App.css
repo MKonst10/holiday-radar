@@ -56,11 +56,10 @@
 }
 
 .favorites-toggle {
-  background-color: #0058a3;
-  color: white;
-  padding: 10px 18px;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border: 1px solid #dee0e3;
   font-size: 14px;
-  border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -68,7 +67,7 @@
 }
 
 .favorites-toggle:hover {
-  background-color: #004077;
+  background-color: #dadada;
 }
 
 .favorites-toggle:focus {

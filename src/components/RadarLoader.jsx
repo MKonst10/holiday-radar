@@ -9,6 +9,7 @@ const RadarLoader = ({ content = "card" }) => {
         <p className="loader-text">Scanning holidays...</p>
       )}
       {content === "card" && <p className="loader-text white">Loading </p>}
+      {content === "preview" && <></>}
     </div>
   );
 };

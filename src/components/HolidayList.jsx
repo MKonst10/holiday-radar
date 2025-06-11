@@ -19,7 +19,7 @@ const HolidayList = ({
     const { imageUrl, loading } = useUnsplashImage(name);
 
     if (loading) {
-      return <div className="img-placeholder">Loading...</div>;
+      return <RadarLoader content="preview" />;
     }
 
     return (
