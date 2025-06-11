@@ -16,11 +16,10 @@ function App() {
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
   const [favorites, setFavorites] = useState(() => {
-  const stored = localStorage.getItem("favorites");
-  return stored ? JSON.parse(stored) : [];
-});
+    const stored = localStorage.getItem("favorites");
+    return stored ? JSON.parse(stored) : [];
+  });
   const [showFavorites, setShowFavorites] = useState(false);
-
 
   useEffect(() => {
     if (detectedCountryCode && !countryCode) {
@@ -69,7 +68,6 @@ function App() {
     load();
   }, [countryCode]);
 
-
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
@@ -96,10 +94,9 @@ function App() {
           <img src={radarIcon} alt="Radar" />
           <h1>Holiday Radar</h1>
         </div>
-        <p>View upcoming public holidays by country</p>
+        <p>Explore upcoming holidays and plan your next adventure.</p>
 
         <div className="country-select">
-          <label htmlFor="country">Choose a country: </label>
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             {countryCode && (
               <img
@@ -126,12 +123,11 @@ function App() {
         </div>
 
         <button
-  onClick={() => setShowFavorites((prev) => !prev)}
-  className={`favorites-toggle`}
->
-  {showFavorites ? "Show All" : "Show Favorites"}
-</button>
-
+          onClick={() => setShowFavorites((prev) => !prev)}
+          className={`favorites-toggle`}
+        >
+          {showFavorites ? "Show All" : "Show Favorites"}
+        </button>
 
         {error && (
           <p className="error-message" style={{ marginTop: "10px" }}>

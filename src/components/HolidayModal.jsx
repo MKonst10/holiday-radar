@@ -1,5 +1,5 @@
 import "./HolidayModal.css";
-import { useUnsplashImage } from "../hooks/useUnsplashImage";
+import { useWikipediaImage } from "../hooks/useWikipediaImage";
 import useRegionNames from "../hooks/useRegionNames";
 import { fetchWikipediaSummary } from "../services/fetchWikipediaSummary";
 import { createShareMessage } from "../utils/shareMessage";
@@ -13,11 +13,15 @@ import {
   MapPinIcon as PinIcon,
   DocumentTextIcon as DescriptionIcon,
   RocketLaunchIcon as LaunchYearIcon,
+  StarIcon as StarIconOutline,
 } from "@heroicons/react/24/outline";
-import { SparklesIcon } from "@heroicons/react/24/solid";
+import {
+  SparklesIcon,
+  StarIcon as StarIconSolid,
+} from "@heroicons/react/24/solid";
 import RadarLoader from "./RadarLoader";
 
-const HolidayModal = ({ holiday, onClose }) => {
+const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
   const [description, setDescription] = useState("");
   const [descriptionLoading, setDescriptionLoading] = useState(true);
   const { title, text } = createShareMessage(holiday);
@@ -27,7 +31,7 @@ const HolidayModal = ({ holiday, onClose }) => {
     [holiday.counties]
   );
   const regionNames = useRegionNames(subdivisionCodes);
-  const { imageUrl, loading: imageLoading } = useUnsplashImage(
+  const { imageUrl, loading: imageLoading } = useWikipediaImage(
     holiday?.name || ""
   );
 
@@ -44,26 +48,28 @@ const HolidayModal = ({ holiday, onClose }) => {
 
   const modalLoading = imageLoading || descriptionLoading;
 
- useEffect(() => {
-  const loadDescription = async () => {
-    if (!holiday?.name) {
-      setDescriptionLoading(false);
-      return;
-    }
+  useEffect(() => {
+    const loadDescription = async () => {
+      if (!holiday?.name) {
+        setDescriptionLoading(false);
+        return;
+      }
 
-    try {
-      const summary = await fetchWikipediaSummary(holiday.name, holiday.localName);
-      if (summary) setDescription(summary);
-    } catch (e) {
-      console.warn("Failed to load description:", e);
-    } finally {
-      setDescriptionLoading(false);
-    }
-  };
+      try {
+        const summary = await fetchWikipediaSummary(
+          holiday.name,
+          holiday.localName
+        );
+        if (summary) setDescription(summary);
+      } catch (e) {
+        console.warn("Failed to load description:", e);
+      } finally {
+        setDescriptionLoading(false);
+      }
+    };
 
-  loadDescription();
-}, [holiday]);
-
+    loadDescription();
+  }, [holiday]);
 
   if (!holiday) return null;
 
@@ -80,13 +86,27 @@ const HolidayModal = ({ holiday, onClose }) => {
             </div>
           )}
           <div className="modal-buttons">
-            <button
-              className="modal-share"
-              onClick={handleShare}
-              aria-label="Share"
-            >
-              <ShareIcon className="icon" />
-            </button>
+            <div className="modal-buttons--left">
+              <button
+                className="modal-share"
+                onClick={handleShare}
+                aria-label="Share"
+              >
+                <ShareIcon className="icon" />
+              </button>
+              <button
+                className="modal-favorite"
+                onClick={() => onToggleFavorite(holiday)}
+                aria-label="Favorite"
+              >
+                {isFavorite(holiday) ? (
+                  <StarIconSolid className="icon favorite active" />
+                ) : (
+                  <StarIconOutline className="icon favorite" />
+                )}
+              </button>
+            </div>
+
             <button
               className="modal-close"
               onClick={onClose}
@@ -159,7 +179,7 @@ const HolidayModal = ({ holiday, onClose }) => {
               e.target.onerror = null;
               e.target.src = "/fallback.jpg";
             }}
-            style={{ display: imageUrl ? "block" : "none" }}
+            style={{ display: "block" }}
           />
         </div>
       )}
