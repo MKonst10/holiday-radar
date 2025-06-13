@@ -46,6 +46,17 @@
   overflow-x: hidden;
 }
 
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: #c4c4c496;
+  border-radius: 16px;
+  border-top: 60px solid transparent;
+  border-bottom: 30px solid transparent;
+  background-clip: content-box;
+}
+
 h2 {
   margin: 0;
   font-size: 22px;

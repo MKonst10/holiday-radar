@@ -37,10 +37,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
 
   const handleShare = async () => {
     try {
-      await navigator.share({
-        title,
-        text,
-      });
+      await navigator.share({ title, text });
     } catch (err) {
       console.warn("Share failed:", err);
     }
@@ -85,6 +82,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
               <SparklesIcon className="icon today" /> Happy Holiday!
             </div>
           )}
+
           <div className="modal-buttons">
             <div className="modal-buttons--left">
               <button
@@ -118,7 +116,6 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
 
           <h2>{holiday.localName}</h2>
           <p className="modal-sub">{holiday.name}</p>
-
           <div className="modal-detail">
             <p>
               <strong>
@@ -137,14 +134,16 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
               </strong>{" "}
               {holiday.global ? "Yes" : "No"}
             </p>
+
             {holiday.launchYear && (
               <p>
                 <strong>
-                  <LaunchYearIcon /> Launch year:
+                  <LaunchYearIcon className="icon" /> Launch year:
                 </strong>{" "}
                 {holiday.launchYear}
               </p>
             )}
+
             {holiday.types?.length > 0 && (
               <p>
                 <strong>
@@ -153,6 +152,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
                 {holiday.types.join(", ")}
               </p>
             )}
+
             {regionNames.length > 0 && (
               <p className="modal-regions">
                 <strong>
@@ -161,6 +161,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
                 {regionNames.join(", ")}
               </p>
             )}
+
             {description && (
               <p className="modal-description">
                 <strong>
@@ -174,12 +175,11 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
           <img
             src={imageUrl || "/fallback.jpg"}
             alt={holiday.name}
-            className={`modal-image`}
+            className="modal-image"
             onError={(e) => {
               e.target.onerror = null;
               e.target.src = "/fallback.jpg";
             }}
-            style={{ display: "block" }}
           />
         </div>
       )}
