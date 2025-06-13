@@ -1,5 +1,6 @@
 import "./HolidayModal.css";
-import { useWikipediaImage } from "../hooks/useWikipediaImage";
+// import { useWikipediaImage } from "../hooks/useWikipediaImage";
+import { useUnsplashImage } from "../hooks/useUnsplashImage";
 import useRegionNames from "../hooks/useRegionNames";
 import { fetchWikipediaSummary } from "../services/fetchWikipediaSummary";
 import { createShareMessage } from "../utils/shareMessage";
@@ -31,7 +32,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
     [holiday.counties]
   );
   const regionNames = useRegionNames(subdivisionCodes);
-  const { imageUrl, loading: imageLoading } = useWikipediaImage(
+  const { imageUrl, loading: imageLoading } = useUnsplashImage(
     holiday?.name || ""
   );
 
