@@ -1,26 +1,25 @@
 const cleanTitle = (title) => {
   return title
-    .replace(/\(.*?\)/g, "") 
-    .replace(/[^a-zA-Z0-9\s-]/g, "") 
+    .replace(/\(.*?\)/g, "")
+    .replace(/[^a-zA-Z0-9\s-]/g, "")
     .trim()
-    .replace(/\s+/g, "_"); 
+    .replace(/\s+/g, "_");
 };
 
 const tryFetch = async (title) => {
-  const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTitle(title))}`;
+  const url = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
+    cleanTitle(title)
+  )}`;
   try {
     const res = await fetch(url);
     if (!res.ok) return null;
 
     const data = await res.json();
     return data.extract || null;
-  } catch (e) {
-    console.log(e);
+  } catch {
     return null;
   }
 };
-
-
 
 const truncateText = (text, maxLength = 300) => {
   if (text.length <= maxLength) return text;
@@ -38,4 +37,3 @@ export const fetchWikipediaSummary = async (name, localName) => {
 
   return null;
 };
-

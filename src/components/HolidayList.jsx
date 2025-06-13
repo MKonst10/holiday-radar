@@ -78,8 +78,6 @@ const HolidayList = ({
             month: "long",
             day: "numeric",
           });
-          console.log(holiday);
-
           return (
             <div
               key={`${holiday.date}-${holiday.localName}`}
