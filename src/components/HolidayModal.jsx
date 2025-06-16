@@ -24,6 +24,7 @@ import RadarLoader from "./RadarLoader";
 
 const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
   const [description, setDescription] = useState("");
+  const [wikiUrl, setWikiUrl] = useState("");
   const [descriptionLoading, setDescriptionLoading] = useState(true);
   const { title, text } = createShareMessage(holiday);
 
@@ -58,7 +59,10 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
           holiday.name,
           holiday.localName
         );
-        if (summary) setDescription(summary);
+        if (summary) {
+          setDescription(summary.text);
+          setWikiUrl(summary.link);
+        }
       } catch (e) {
         console.warn("Failed to load description:", e);
       } finally {
@@ -162,12 +166,26 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
             )}
 
             {description && (
-              <p className="modal-description">
+              <div className="modal-description">
                 <strong>
                   <DescriptionIcon className="icon" /> Description:
                 </strong>{" "}
-                {description}
-              </p>
+                <p>
+                  {description}
+                  {wikiUrl && (
+                    <>
+                      <a
+                        href={wikiUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="read-more"
+                      >
+                        Read more
+                      </a>
+                    </>
+                  )}
+                </p>
+              </div>
             )}
           </div>
 

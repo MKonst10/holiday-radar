@@ -15,7 +15,10 @@ const tryFetch = async (title) => {
     if (!res.ok) return null;
 
     const data = await res.json();
-    return data.extract || null;
+    return {
+      extract: data.extract || null,
+      url: data.content_urls?.desktop?.page || null,
+    };
   } catch {
     return null;
   }
@@ -32,7 +35,11 @@ export const fetchWikipediaSummary = async (name, localName) => {
 
   for (const query of queries) {
     const result = await tryFetch(query);
-    if (result) return truncateText(result);
+    if (result?.extract)
+      return {
+        text: truncateText(result.extract),
+        link: result.url,
+      };
   }
 
   return null;

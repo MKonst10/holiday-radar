@@ -85,7 +85,8 @@ h2 {
   margin-bottom: 20px;
 }
 
-.modal-detail p {
+.modal-detail p,
+.modal-detail div {
   margin: 6px 0;
   text-align: left;
   font-size: 15px;
@@ -104,6 +105,23 @@ h2 {
 .modal-description,
 .modal-regions {
   flex-direction: column;
+}
+
+.modal-description p {
+  display: block;
+}
+
+.read-more {
+  color: #000000;
+  font-weight: 600;
+  margin-left: 4px;
+  text-decoration: underline;
+  font-size: 0.95em;
+  transition: 0.2s all ease;
+}
+
+.read-more:hover {
+  color: #007bff;
 }
 
 .modal-image {
