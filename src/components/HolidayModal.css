@@ -33,7 +33,7 @@
 
 .modal-content {
   background: #ffffff;
-  padding: 0 24px 24px 24px;
+  padding: 0 24px;
   border-radius: 16px;
   max-width: 600px;
   width: 90%;
@@ -44,6 +44,18 @@
     sans-serif;
   max-height: 80%;
   overflow-x: hidden;
+}
+
+.modal-content::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  margin-left: -24px;
+  height: 30px;
+  width: calc(100% + 48px);
+  background: linear-gradient(to bottom, transparent, white);
+  pointer-events: none;
+  display: flex;
 }
 
 .modal-content::-webkit-scrollbar {
