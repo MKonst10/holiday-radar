@@ -4,6 +4,7 @@ import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
 import radarIcon from "./assets/icons/radar.svg";
 import Select from "react-select";
+import { GlobeAltIcon as GlobalIcon } from "@heroicons/react/24/outline";
 import "./App.css";
 
 function App() {
@@ -23,6 +24,12 @@ function App() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showTodayOnly, setShowTodayOnly] = useState(false);
   const [todayHolidays, setTodayHolidays] = useState([]);
+
+  const ALL_COUNTRIES_OPTION = {
+    value: "ALL",
+    label: "All countries",
+    code: "ALL",
+  };
 
   useEffect(() => {
     if (detectedCountryCode && !countryCode) {
@@ -151,16 +158,24 @@ function App() {
     code: opt.code,
   }));
 
-  const customSingleValue = ({ data }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <img
-        src={`https://flagcdn.com/w20/${data.code.toLowerCase()}.png`}
-        alt=""
-        style={{ width: "20px", height: "14px" }}
-      />
-      <span>{data.label}</span>
-    </div>
-  );
+  const customSingleValue = ({ data }) => {
+    const isAll = data.value === "ALL";
+
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        {isAll ? (
+          <GlobalIcon className="icon" />
+        ) : (
+          <img
+            src={`https://flagcdn.com/w20/${data.code.toLowerCase()}.png`}
+            alt=""
+            style={{ width: "20px", height: "14px" }}
+          />
+        )}
+        <span>{data.label}</span>
+      </div>
+    );
+  };
 
   const customOption = (props) => {
     const { data, innerRef, innerProps } = props;
@@ -194,33 +209,38 @@ function App() {
         </div>
         <p>Explore upcoming holidays and plan your next adventure.</p>
 
-        {showTodayOnly === false && showFavorites === false ? (
-          <Select
-            options={countryOptions}
-            onChange={(selected) => setCountryCode(selected.value)}
-            value={countryOptions.find((opt) => opt.value === countryCode)}
-            components={{
-              SingleValue: customSingleValue,
-              Option: customOption,
-            }}
-            placeholder="Select..."
-            isSearchable={false}
-            styles={{
-              control: (base) => ({
-                ...base,
-                display: "flex",
-                alignItems: "center",
-                borderRadius: "12px",
-              }),
-              valueContainer: (base) => ({
-                ...base,
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }),
-            }}
-          />
-        ) : null}
+        {/* {showTodayOnly === false && showFavorites === false ? ( */}
+        <Select
+          options={countryOptions}
+          onChange={(selected) => setCountryCode(selected.value)}
+          value={
+            showFavorites || showTodayOnly
+              ? ALL_COUNTRIES_OPTION
+              : countryOptions.find((opt) => opt.value === countryCode)
+          }
+          isDisabled={showFavorites || showTodayOnly}
+          components={{
+            SingleValue: customSingleValue,
+            Option: customOption,
+          }}
+          placeholder="Select..."
+          isSearchable={false}
+          styles={{
+            control: (base) => ({
+              ...base,
+              display: "flex",
+              alignItems: "center",
+              borderRadius: "12px",
+            }),
+            valueContainer: (base) => ({
+              ...base,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }),
+          }}
+        />
+        {/* ) : null} */}
 
         <div className="header-buttons">
           <button
@@ -228,6 +248,7 @@ function App() {
               setShowFavorites((prev) => {
                 const next = !prev;
                 if (next) setShowTodayOnly(false);
+                setCountryCode(null);
                 return next;
               });
             }}
@@ -240,6 +261,7 @@ function App() {
               setShowTodayOnly((prev) => {
                 const next = !prev;
                 if (next) setShowFavorites(false);
+                setCountryCode("");
                 return next;
               });
             }}
