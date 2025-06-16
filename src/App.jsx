@@ -55,6 +55,11 @@ function App() {
     loadCountries();
   }, []);
 
+  const getCountryNameByCode = (code, countryList) => {
+    const match = countryList.find((c) => c.code === code);
+    return match ? match.name : code;
+  };
+
   useEffect(() => {
     if (countries.length === 0) return;
 
@@ -73,7 +78,10 @@ function App() {
             .filter((h) => h.date === today)
             .map((h) => ({
               ...h,
-              country: country.name,
+              country:
+                h.country ||
+                country.name ||
+                getCountryNameByCode(country.code, countries),
               countryCode: country.code,
             }));
         });
@@ -115,12 +123,24 @@ function App() {
       const exists = prev.some(
         (h) => h.date === holiday.date && h.localName === holiday.localName
       );
+
       if (exists) {
         return prev.filter(
           (h) => !(h.date === holiday.date && h.localName === holiday.localName)
         );
       } else {
-        return [...prev, holiday];
+        const countryCode = holiday.countryCode || holiday.country?.code || "";
+        const countryName =
+          holiday.country || getCountryNameByCode(countryCode, countries) || "";
+
+        return [
+          ...prev,
+          {
+            ...holiday,
+            country: countryName,
+            countryCode,
+          },
+        ];
       }
     });
   };
@@ -174,28 +194,33 @@ function App() {
         </div>
         <p>Explore upcoming holidays and plan your next adventure.</p>
 
-        <Select
-          options={countryOptions}
-          onChange={(selected) => setCountryCode(selected.value)}
-          value={countryOptions.find((opt) => opt.value === countryCode)}
-          components={{ SingleValue: customSingleValue, Option: customOption }}
-          placeholder="Select..."
-          isSearchable={false}
-          styles={{
-            control: (base) => ({
-              ...base,
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "12px",
-            }),
-            valueContainer: (base) => ({
-              ...base,
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }),
-          }}
-        />
+        {showTodayOnly === false && showFavorites === false ? (
+          <Select
+            options={countryOptions}
+            onChange={(selected) => setCountryCode(selected.value)}
+            value={countryOptions.find((opt) => opt.value === countryCode)}
+            components={{
+              SingleValue: customSingleValue,
+              Option: customOption,
+            }}
+            placeholder="Select..."
+            isSearchable={false}
+            styles={{
+              control: (base) => ({
+                ...base,
+                display: "flex",
+                alignItems: "center",
+                borderRadius: "12px",
+              }),
+              valueContainer: (base) => ({
+                ...base,
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }),
+            }}
+          />
+        ) : null}
 
         <div className="header-buttons">
           <button
@@ -241,6 +266,7 @@ function App() {
         onToggleFavorite={toggleFavorite}
         showFavorites={showFavorites}
         showTodayOnly={showTodayOnly}
+        showToday={true}
       />
     </div>
   );

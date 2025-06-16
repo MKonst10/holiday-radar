@@ -32,6 +32,13 @@
   align-items: flex-start;
 }
 
+.holiday-country-flag {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-bottom: 4px;
+}
+
 .holiday-type {
   font-weight: 400;
   font-size: 14px;

@@ -11,6 +11,7 @@ const HolidayList = ({
   onToggleFavorite,
   showFavorites,
   showTodayOnly,
+  showToday = false,
 }) => {
   const [selectedHoliday, setSelectedHoliday] = useState(null);
 
@@ -95,6 +96,18 @@ const HolidayList = ({
               onClick={() => handleCardClick(holiday)}
             >
               <div className="holiday-info">
+                {(showToday || showFavorites) &&
+                  holiday.country &&
+                  holiday.countryCode && (
+                    <div className="holiday-country-flag">
+                      <img
+                        src={`https://flagcdn.com/w40/${holiday.countryCode.toLowerCase()}.png`}
+                        alt={`${holiday.country} flag`}
+                        className="flag-icon"
+                      />
+                      <span>{holiday.country}</span>
+                    </div>
+                  )}
                 <p className="holiday-type">
                   {holiday.types && holiday.types.length > 0
                     ? `${holiday.types[0]} Holiday`
