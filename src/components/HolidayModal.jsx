@@ -73,17 +73,15 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
+      {new Date(holiday.date).toDateString() === new Date().toDateString() && (
+        <div className="holiday-banner">
+          <SparklesIcon className="icon today" /> Happy Holiday!
+        </div>
+      )}
       {modalLoading ? (
         <RadarLoader content="card" />
       ) : (
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-          {new Date(holiday.date).toDateString() ===
-            new Date().toDateString() && (
-            <div className="holiday-banner">
-              <SparklesIcon className="icon today" /> Happy Holiday!
-            </div>
-          )}
-
           <div className="modal-buttons">
             <div className="modal-buttons--left">
               <button
