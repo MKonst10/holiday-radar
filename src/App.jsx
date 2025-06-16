@@ -21,6 +21,8 @@ function App() {
     return stored ? JSON.parse(stored) : [];
   });
   const [showFavorites, setShowFavorites] = useState(false);
+  const [showTodayOnly, setShowTodayOnly] = useState(false);
+  const [todayHolidays, setTodayHolidays] = useState([]);
 
   useEffect(() => {
     if (detectedCountryCode && !countryCode) {
@@ -52,6 +54,41 @@ function App() {
 
     loadCountries();
   }, []);
+
+  useEffect(() => {
+    if (countries.length === 0) return;
+
+    const loadTodayHolidays = async () => {
+      const today = new Date().toISOString().split("T")[0];
+
+      try {
+        const allHolidayFetches = countries.map(async (country) => {
+          const url = `https://date.nager.at/api/v3/PublicHolidays/${new Date().getFullYear()}/${
+            country.code
+          }`;
+          const holidays = await fetch(url)
+            .then((res) => res.json())
+            .catch(() => []);
+          return holidays
+            .filter((h) => h.date === today)
+            .map((h) => ({
+              ...h,
+              country: country.name,
+              countryCode: country.code,
+            }));
+        });
+
+        const results = await Promise.all(allHolidayFetches);
+        const merged = results.flat();
+        setTodayHolidays(merged);
+      } catch (e) {
+        console.error("Failed to fetch today’s holidays:", e);
+        setTodayHolidays([]);
+      }
+    };
+
+    loadTodayHolidays();
+  }, [countries]);
 
   useEffect(() => {
     const load = async () => {
@@ -160,12 +197,32 @@ function App() {
           }}
         />
 
-        <button
-          onClick={() => setShowFavorites((prev) => !prev)}
-          className={`favorites-toggle`}
-        >
-          {showFavorites ? "Show All" : "Show Favorites"}
-        </button>
+        <div className="header-buttons">
+          <button
+            onClick={() => {
+              setShowFavorites((prev) => {
+                const next = !prev;
+                if (next) setShowTodayOnly(false);
+                return next;
+              });
+            }}
+            className={`favorites-toggle`}
+          >
+            {showFavorites ? "Explore All" : "My Favorites"}
+          </button>
+          <button
+            onClick={async () => {
+              setShowTodayOnly((prev) => {
+                const next = !prev;
+                if (next) setShowFavorites(false);
+                return next;
+              });
+            }}
+            className="today-toggle"
+          >
+            {showTodayOnly ? "Explore All" : " What’s Today?"}
+          </button>
+        </div>
 
         {error && (
           <p className="error-message" style={{ marginTop: "10px" }}>
@@ -175,12 +232,15 @@ function App() {
       </div>
 
       <HolidayList
-        holidays={showFavorites ? favorites : holidays}
+        holidays={
+          showTodayOnly ? todayHolidays : showFavorites ? favorites : holidays
+        }
         loading={loading || geoLoading}
         key={countryCode + showFavorites}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
         showFavorites={showFavorites}
+        showTodayOnly={showTodayOnly}
       />
     </div>
   );

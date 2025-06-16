@@ -55,7 +55,16 @@
   width: 30px;
 }
 
-.favorites-toggle {
+.header-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 16px;
+}
+
+.favorites-toggle,
+.today-toggle {
   background-color: #ffffff;
   color: rgb(0, 0, 0);
   border: 1px solid #dee0e3;
@@ -63,15 +72,16 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin: 16px auto 0 auto;
 }
 
-.favorites-toggle:hover {
+.favorites-toggle:hover,
+.today-toggle:hover {
   background-color: #dadada;
   border: 1px solid #dee0e3;
 }
 
-.favorites-toggle:focus {
+.favorites-toggle:focus,
+.today-toggle:focus {
   outline: none;
 }
 

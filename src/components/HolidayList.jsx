@@ -10,6 +10,7 @@ const HolidayList = ({
   favorites,
   onToggleFavorite,
   showFavorites,
+  showTodayOnly,
 }) => {
   const [selectedHoliday, setSelectedHoliday] = useState(null);
 
@@ -52,12 +53,16 @@ const HolidayList = ({
 
   if (loading) return <RadarLoader content="list" />;
   if ((!holidays || holidays.length === 0) && loading) return null;
+
   if (!holidays || holidays.length === 0) {
-    return (
-      <p className="empty-message">
-        {showFavorites ? "No favorite holidays yet." : "No holidays to show."}
-      </p>
-    );
+    let message = "No holidays to show.";
+    if (showFavorites) {
+      message = "No favorite holidays yet.";
+    } else if (showTodayOnly) {
+      message = "No holidays today.";
+    }
+
+    return <p className="empty-message">{message}</p>;
   }
 
   const todayTimestamp = today.getTime();
@@ -66,10 +71,15 @@ const HolidayList = ({
     .filter((h) => new Date(h.date).getTime() >= todayTimestamp)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
+  const todayStr = new Date().toISOString().split("T")[0];
+  const filteredHolidays = showTodayOnly
+    ? upcoming.filter((h) => h.date === todayStr)
+    : upcoming;
+
   return (
     <>
       <div className="holiday-list">
-        {upcoming.map((holiday) => {
+        {filteredHolidays.map((holiday) => {
           const holidayDate = new Date(holiday.date);
           holidayDate.setHours(0, 0, 0, 0);
           const isToday = holidayDate.getTime() === todayTimestamp;
