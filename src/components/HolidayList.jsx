@@ -66,16 +66,20 @@ const HolidayList = ({
     return <p className="empty-message">{message}</p>;
   }
 
-  const todayTimestamp = today.getTime();
+  const todayStr = new Date().toISOString().split("T")[0];
+  const todayTimestamp = new Date(todayStr).getTime();
 
   const upcoming = holidays
     .filter((h) => new Date(h.date).getTime() >= todayTimestamp)
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  const todayStr = new Date().toISOString().split("T")[0];
   const filteredHolidays = showTodayOnly
     ? upcoming.filter((h) => h.date === todayStr)
     : upcoming;
+
+  if (upcoming.length === 0 && !showFavorites && !showTodayOnly) {
+    return <p className="empty-message">No more holidays left this year.</p>;
+  }
 
   return (
     <>
