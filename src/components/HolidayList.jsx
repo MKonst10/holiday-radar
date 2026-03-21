@@ -12,6 +12,7 @@ const HolidayList = ({
   showFavorites,
   showTodayOnly,
   showToday = false,
+  theme,
 }) => {
   const [selectedHoliday, setSelectedHoliday] = useState(null);
 
@@ -21,7 +22,7 @@ const HolidayList = ({
     const { imageUrl, loading } = useUnsplashImage(name);
 
     if (loading) {
-      return <RadarLoader content="preview" />;
+      return <RadarLoader content="preview" theme={theme} />;
     }
 
     return (
@@ -35,10 +36,11 @@ const HolidayList = ({
 
   const isFavorite = (holiday) =>
     favorites.some(
-      (h) => h.date === holiday.date && h.localName === holiday.localName
+      (h) => h.date === holiday.date && h.localName === holiday.localName,
     );
 
   const today = new Date();
+  [];
   today.setHours(0, 0, 0, 0);
 
   const getDaysLeft = (dateStr) => {
@@ -52,7 +54,7 @@ const HolidayList = ({
     return rtf.format(diffDays, "day");
   };
 
-  if (loading) return <RadarLoader content="list" />;
+  if (loading) return <RadarLoader content="list" theme={theme} />;
   if ((!holidays || holidays.length === 0) && loading) return null;
 
   if (!holidays || holidays.length === 0) {
@@ -142,6 +144,7 @@ const HolidayList = ({
           onClose={() => setSelectedHoliday(null)}
           isFavorite={isFavorite}
           onToggleFavorite={onToggleFavorite}
+          theme={theme}
         />
       )}
     </>

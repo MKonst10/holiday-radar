@@ -11,21 +11,35 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: transform 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
   gap: 10px;
-  padding: 10px 0;
+  padding: 14px;
   max-width: 400px;
   width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, var(--surface), var(--surface-muted));
+  color: var(--text);
+  box-shadow: 0 4px 12px var(--shadow);
 }
 
 .holiday-item:hover {
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--shadow);
 }
 
 .holiday-item.today-highlight {
   border-left: 4px solid #facc15;
   padding-left: 4px;
+}
+
+.holiday-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 
 .holiday-info {
@@ -41,11 +55,15 @@
   margin-bottom: 4px;
 }
 
+.holiday-country-flag span {
+  color: var(--text);
+}
+
 .holiday-type {
   font-weight: 400;
   font-size: 14px;
   line-height: 1.5;
-  color: #6b7582;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -53,13 +71,13 @@
   font-size: 18px;
   font-weight: 600;
   margin: 4px 0;
-  color: #111827;
+  color: var(--text);
   text-align: left;
 }
 
 .holiday-date {
   font-size: 14px;
-  color: #6b7582;
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 3px;

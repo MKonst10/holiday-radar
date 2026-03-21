@@ -22,7 +22,13 @@ import {
 } from "@heroicons/react/24/solid";
 import RadarLoader from "./RadarLoader";
 
-const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
+const HolidayModal = ({
+  holiday,
+  onClose,
+  isFavorite,
+  onToggleFavorite,
+  theme,
+}) => {
   const [description, setDescription] = useState("");
   const [wikiUrl, setWikiUrl] = useState("");
   const [descriptionLoading, setDescriptionLoading] = useState(true);
@@ -30,11 +36,11 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
 
   const subdivisionCodes = useMemo(
     () => holiday.counties || [],
-    [holiday.counties]
+    [holiday.counties],
   );
   const regionNames = useRegionNames(subdivisionCodes);
   const { imageUrl, loading: imageLoading } = useUnsplashImage(
-    holiday?.name || ""
+    holiday?.name || "",
   );
 
   const handleShare = async () => {
@@ -57,7 +63,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
       try {
         const summary = await fetchWikipediaSummary(
           holiday.name,
-          holiday.localName
+          holiday.localName,
         );
         if (summary) {
           setDescription(summary.text);
@@ -83,7 +89,7 @@ const HolidayModal = ({ holiday, onClose, isFavorite, onToggleFavorite }) => {
         </div>
       )}
       {modalLoading ? (
-        <RadarLoader content="card" />
+        <RadarLoader content="card" theme={theme} />
       ) : (
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="modal-buttons">

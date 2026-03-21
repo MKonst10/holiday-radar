@@ -14,11 +14,11 @@
 }
 
 .loader-text {
-  color: #000000;
+  color: var(--text);
   font-weight: 500;
   font-size: 16px;
-  font-family: "Plus Jakarta Sans", BlinkMacSystemFont, "Segoe UI", Roboto,
-    sans-serif;
+  font-family:
+    "Plus Jakarta Sans", BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .loader-text.white {

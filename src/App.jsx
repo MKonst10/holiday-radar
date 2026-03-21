@@ -3,6 +3,7 @@ import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
 import radarIcon from "./assets/icons/radar.svg";
+import radarIconWhite from "./assets/icons/radar-w.svg";
 import Select from "react-select";
 import { GlobeAltIcon as GlobalIcon } from "@heroicons/react/24/outline";
 import "./App.css";
@@ -17,6 +18,14 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "light";
+    const storedTheme = localStorage.getItem("theme");
+    if (storedTheme === "light" || storedTheme === "dark") return storedTheme;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
   const [favorites, setFavorites] = useState(() => {
     const stored = localStorage.getItem("favorites");
     return stored ? JSON.parse(stored) : [];
@@ -38,10 +47,18 @@ function App() {
   }, [detectedCountryCode, countryCode]);
 
   useEffect(() => {
+    const bodyClass = document.body.classList;
+    bodyClass.toggle("theme-dark", theme === "dark");
+    bodyClass.toggle("theme-light", theme === "light");
+    document.body.style.colorScheme = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  useEffect(() => {
     const loadCountries = async () => {
       try {
         const res = await fetch(
-          "https://date.nager.at/api/v3/AvailableCountries"
+          "https://date.nager.at/api/v3/AvailableCountries",
         );
         const data = await res.json();
 
@@ -128,12 +145,13 @@ function App() {
   const toggleFavorite = (holiday) => {
     setFavorites((prev) => {
       const exists = prev.some(
-        (h) => h.date === holiday.date && h.localName === holiday.localName
+        (h) => h.date === holiday.date && h.localName === holiday.localName,
       );
 
       if (exists) {
         return prev.filter(
-          (h) => !(h.date === holiday.date && h.localName === holiday.localName)
+          (h) =>
+            !(h.date === holiday.date && h.localName === holiday.localName),
         );
       } else {
         const countryCode = holiday.countryCode || holiday.country?.code || "";
@@ -188,6 +206,8 @@ function App() {
           alignItems: "center",
           gap: "8px",
           padding: "6px 10px",
+          color: "var(--text)",
+          background: "var(--surface)",
         }}
       >
         <img
@@ -200,11 +220,62 @@ function App() {
     );
   };
 
+  const selectStyles = {
+    control: (base) => ({
+      ...base,
+      display: "flex",
+      alignItems: "center",
+      borderRadius: "12px",
+      background: "var(--surface)",
+      borderColor: "var(--border)",
+      color: "var(--text)",
+      boxShadow: "none",
+      minHeight: "44px",
+      "&:hover": { borderColor: "var(--border)" },
+    }),
+    valueContainer: (base) => ({
+      ...base,
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      color: "var(--text)",
+    }),
+    SingleValue: (base) => ({
+      ...base,
+      color: "var(--text)",
+    }),
+    menu: (base) => ({
+      ...base,
+      background: "var(--surface)",
+      color: "var(--text)",
+      border: "1px solid var(--border)",
+      boxShadow: "0 8px 16px var(--shadow)",
+    }),
+    option: (base, state) => ({
+      ...base,
+      backgroundColor: state.isSelected
+        ? "var(--button-hover)"
+        : "var(--surface)",
+      color: "var(--text)",
+      cursor: "pointer",
+      ":hover": {
+        backgroundColor: "var(--button-hover)",
+      },
+    }),
+  };
+
   return (
     <div className="app-container">
       <div className="app-header">
         <div className="header-wrap">
-          <img src={radarIcon} alt="Radar" />
+          <img
+            src={theme === "dark" ? radarIconWhite : radarIcon}
+            alt="Radar"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = radarIcon;
+            }}
+          />
           <h1>Holiday Radar</h1>
         </div>
         <p>Explore upcoming holidays and plan your next adventure.</p>
@@ -225,24 +296,19 @@ function App() {
           }}
           placeholder="Select..."
           isSearchable={false}
-          styles={{
-            control: (base) => ({
-              ...base,
-              display: "flex",
-              alignItems: "center",
-              borderRadius: "12px",
-            }),
-            valueContainer: (base) => ({
-              ...base,
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }),
-          }}
+          styles={selectStyles}
         />
         {/* ) : null} */}
 
         <div className="header-buttons">
+          <button
+            onClick={() => {
+              setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+            }}
+            className="theme-toggle"
+          >
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </button>
           <button
             onClick={() => {
               setShowFavorites((prev) => {
@@ -271,11 +337,7 @@ function App() {
           </button>
         </div>
 
-        {error && (
-          <p className="error-message" style={{ marginTop: "10px" }}>
-            {error}
-          </p>
-        )}
+        {error && <p className="error-message">{error}</p>}
       </div>
 
       <HolidayList
@@ -289,6 +351,7 @@ function App() {
         showFavorites={showFavorites}
         showTodayOnly={showTodayOnly}
         showToday={true}
+        theme={theme}
       />
     </div>
   );
