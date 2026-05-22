@@ -1,11 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGeolocation } from "./hooks/useGeolocation";
 import { fetchHolidays } from "./services/holidaysAPI";
 import HolidayList from "./components/HolidayList";
 import radarIcon from "./assets/icons/radar.svg";
 import radarIconWhite from "./assets/icons/radar-w.svg";
 import Select from "react-select";
-import { GlobeAltIcon as GlobalIcon } from "@heroicons/react/24/outline";
+import {
+  GlobeAltIcon as GlobalIcon,
+  Cog6ToothIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
+import useTheme from "./hooks/useTheme";
 import "./App.css";
 
 function App() {
@@ -18,14 +23,19 @@ function App() {
   const [countries, setCountries] = useState([]);
   const [holidays, setHolidays] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === "undefined") return "light";
-    const storedTheme = localStorage.getItem("theme");
-    if (storedTheme === "light" || storedTheme === "dark") return storedTheme;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+  const { theme, themeMode, setThemeMode } = useTheme();
+  const [showSettings, setShowSettings] = useState(false);
+  const [defaultCountry, setDefaultCountry] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return localStorage.getItem("defaultCountry") || "";
   });
+  const [dataFreshnessMode, setDataFreshnessMode] = useState(() => {
+    if (typeof window === "undefined") return "auto";
+    return localStorage.getItem("dataFreshnessMode") || "auto";
+  });
+  const [refreshToken, setRefreshToken] = useState(0);
+  const settingsRef = useRef(null);
+  const settingsButtonRef = useRef(null);
   const [favorites, setFavorites] = useState(() => {
     const stored = localStorage.getItem("favorites");
     return stored ? JSON.parse(stored) : [];
@@ -41,18 +51,57 @@ function App() {
   };
 
   useEffect(() => {
-    if (detectedCountryCode && !countryCode) {
+    if (countryCode) return;
+    if (defaultCountry) {
+      setCountryCode(defaultCountry);
+      return;
+    }
+    if (detectedCountryCode) {
       setCountryCode(detectedCountryCode);
     }
-  }, [detectedCountryCode, countryCode]);
+  }, [defaultCountry, detectedCountryCode, countryCode]);
 
   useEffect(() => {
-    const bodyClass = document.body.classList;
-    bodyClass.toggle("theme-dark", theme === "dark");
-    bodyClass.toggle("theme-light", theme === "light");
-    document.body.style.colorScheme = theme;
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    if (typeof window === "undefined") return;
+    if (defaultCountry) {
+      localStorage.setItem("defaultCountry", defaultCountry);
+    } else {
+      localStorage.removeItem("defaultCountry");
+    }
+  }, [defaultCountry]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem("dataFreshnessMode", dataFreshnessMode);
+  }, [dataFreshnessMode]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showSettings &&
+        settingsRef.current &&
+        !settingsRef.current.contains(event.target) &&
+        settingsButtonRef.current &&
+        !settingsButtonRef.current.contains(event.target)
+      ) {
+        setShowSettings(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setShowSettings(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [showSettings]);
 
   useEffect(() => {
     const loadCountries = async () => {
@@ -125,6 +174,7 @@ function App() {
   useEffect(() => {
     const load = async () => {
       if (!countryCode) return;
+      if (dataFreshnessMode === "manual" && refreshToken === 0) return;
       try {
         setLoading(true);
         const data = await fetchHolidays(countryCode);
@@ -136,7 +186,7 @@ function App() {
       }
     };
     load();
-  }, [countryCode]);
+  }, [countryCode, dataFreshnessMode, refreshToken]);
 
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
@@ -302,13 +352,22 @@ function App() {
 
         <div className="header-buttons">
           <button
-            onClick={() => {
-              setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-            }}
-            className="theme-toggle"
+            type="button"
+            ref={settingsButtonRef}
+            className="settings-toggle"
+            onClick={() => setShowSettings((prev) => !prev)}
+            aria-expanded={showSettings}
+            aria-label="Open settings"
           >
-            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            <Cog6ToothIcon className="settings-icon" />
           </button>
+          {/* <button
+            type="button"
+            className="refresh-button"
+            onClick={() => setRefreshToken((prev) => prev + 1)}
+          >
+            Refresh
+          </button> */}
           <button
             onClick={() => {
               setShowFavorites((prev) => {
@@ -318,7 +377,7 @@ function App() {
                 return next;
               });
             }}
-            className={`favorites-toggle`}
+            className="favorites-toggle"
           >
             {showFavorites ? "Explore All" : "My Favorites"}
           </button>
@@ -333,9 +392,105 @@ function App() {
             }}
             className="today-toggle"
           >
-            {showTodayOnly ? "Explore All" : " What’s Today?"}
+            {showTodayOnly ? "Explore All" : "What’s Today?"}
           </button>
         </div>
+
+        {showSettings && (
+          <div className="settings-modal-overlay">
+            <div ref={settingsRef} className="settings-panel">
+              <div className="settings-panel__header">
+                <h2>Settings</h2>
+                <button
+                  type="button"
+                  className="settings-close"
+                  onClick={() => setShowSettings(false)}
+                  aria-label="Close settings"
+                >
+                  <XMarkIcon className="settings-close-icon" />
+                </button>
+              </div>
+              <div className="settings-row">
+                <p className="settings-label">Theme</p>
+                <div className="settings-options">
+                  <label className="settings-option">
+                    <input
+                      type="radio"
+                      name="themeMode"
+                      value="system"
+                      checked={themeMode === "system"}
+                      onChange={() => setThemeMode("system")}
+                    />
+                    <span>System</span>
+                  </label>
+                  <label className="settings-option">
+                    <input
+                      type="radio"
+                      name="themeMode"
+                      value="light"
+                      checked={themeMode === "light"}
+                      onChange={() => setThemeMode("light")}
+                    />
+                    <span>Light</span>
+                  </label>
+                  <label className="settings-option">
+                    <input
+                      type="radio"
+                      name="themeMode"
+                      value="dark"
+                      checked={themeMode === "dark"}
+                      onChange={() => setThemeMode("dark")}
+                    />
+                    <span>Dark</span>
+                  </label>
+                </div>
+              </div>
+              <div className="settings-row">
+                <p className="settings-label">Default country</p>
+                <select
+                  className="settings-select"
+                  value={defaultCountry}
+                  onChange={(event) => setDefaultCountry(event.target.value)}
+                >
+                  <option value="">Device country</option>
+                  {countryOptions.map((option) => (
+                    <option key={option.code} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/* <div className="settings-row">
+                <p className="settings-label">Data freshness</p>
+                <div className="settings-options">
+                  <label className="settings-option">
+                    <input
+                      type="radio"
+                      name="dataFreshnessMode"
+                      value="auto"
+                      checked={dataFreshnessMode === "auto"}
+                      onChange={() => setDataFreshnessMode("auto")}
+                    />
+                    <span>Auto refresh on start</span>
+                  </label>
+                  <label className="settings-option">
+                    <input
+                      type="radio"
+                      name="dataFreshnessMode"
+                      value="manual"
+                      checked={dataFreshnessMode === "manual"}
+                      onChange={() => setDataFreshnessMode("manual")}
+                    />
+                    <span>Manual refresh only</span>
+                  </label>
+                </div>
+              </div>
+              <p className="settings-note">
+                Click Refresh to load holidays when manual mode is active.
+              </p> */}
+            </div>
+          </div>
+        )}
 
         {error && <p className="error-message">{error}</p>}
       </div>
