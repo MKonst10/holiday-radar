@@ -361,13 +361,6 @@ function App() {
           >
             <Cog6ToothIcon className="settings-icon" />
           </button>
-          {/* <button
-            type="button"
-            className="refresh-button"
-            onClick={() => setRefreshToken((prev) => prev + 1)}
-          >
-            Refresh
-          </button> */}
           <button
             onClick={() => {
               setShowFavorites((prev) => {
@@ -460,7 +453,7 @@ function App() {
                   ))}
                 </select>
               </div>
-              {/* <div className="settings-row">
+              <div className="settings-row">
                 <p className="settings-label">Data freshness</p>
                 <div className="settings-options">
                   <label className="settings-option">
@@ -485,9 +478,23 @@ function App() {
                   </label>
                 </div>
               </div>
-              <p className="settings-note">
-                Click Refresh to load holidays when manual mode is active.
-              </p> */}
+              {dataFreshnessMode === "manual" && (
+                <>
+                  <p className="settings-note">
+                    Click Refresh to load holidays when manual mode is active.
+                  </p>
+                  <button
+                    type="button"
+                    className="refresh-button"
+                    onClick={() => {
+                      setRefreshToken((prev) => prev + 1);
+                      setShowSettings(false);
+                    }}
+                  >
+                    Refresh
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}
